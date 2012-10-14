@@ -19,9 +19,13 @@ namespace PuzzleBoobleClone
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Texture2D backGround;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 320;
+            graphics.PreferredBackBufferHeight = 224;
             Content.RootDirectory = "Content";
         }
 
@@ -47,7 +51,7 @@ namespace PuzzleBoobleClone
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            this.backGround = Content.Load<Texture2D>("Images/background");
         }
 
         /// <summary>
@@ -83,7 +87,9 @@ namespace PuzzleBoobleClone
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            spriteBatch.Draw(backGround, new Vector2(0, 0), Color.White);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
