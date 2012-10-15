@@ -21,16 +21,16 @@ namespace PuzzleBoobleClone
 
         Texture2D backGround;
 
-        GameState gameElements;
+        public GameElementsRepository GameElements;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 320;
-            graphics.PreferredBackBufferHeight = 224;
+            graphics.PreferredBackBufferWidth = 640;
+            graphics.PreferredBackBufferHeight = 448;
             Content.RootDirectory = "Content";
 
-            gameElements = new GameState();
+            this.GameElements = new GameElementsRepository();
         }
 
         /// <summary>
@@ -56,6 +56,7 @@ namespace PuzzleBoobleClone
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             this.backGround = Content.Load<Texture2D>("Images/background");
+            this.GameElements.LoadContent(this);
         }
 
         /// <summary>
@@ -78,8 +79,7 @@ namespace PuzzleBoobleClone
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
-            // TODO: Add your update logic here
-
+            GameElements.Update(gameTime, this);
             base.Update(gameTime);
         }
 
@@ -92,7 +92,11 @@ namespace PuzzleBoobleClone
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(backGround, new Vector2(0, 0), Color.White);
+
+            //spriteBatch.Draw(backGround, new Vector2(0, 0), Color.White);
+            spriteBatch.Draw(backGround, new Vector2(0, 0), null, Color.White, 0.0f, new Vector2(0, 0), 2f, SpriteEffects.None, 1);
+            GameElements.Draw(gameTime, spriteBatch, this);
+
             spriteBatch.End();
 
             base.Draw(gameTime);
