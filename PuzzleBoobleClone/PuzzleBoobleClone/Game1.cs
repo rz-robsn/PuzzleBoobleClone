@@ -21,12 +21,16 @@ namespace PuzzleBoobleClone
 
         Texture2D backGround;
 
+        GameState gameElements;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 320;
             graphics.PreferredBackBufferHeight = 224;
             Content.RootDirectory = "Content";
+
+            gameElements = new GameState();
         }
 
         /// <summary>
