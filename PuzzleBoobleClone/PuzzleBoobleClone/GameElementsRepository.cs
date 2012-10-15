@@ -18,6 +18,7 @@ namespace PuzzleBoobleClone
         {
             this.Elements = new List<GameElement>();
             this.Elements.Add(new BagAndLauncherMachine());
+            this.Elements.Add(new AimingArrow());
         }
 
         public void LoadContent(Game1 game)
