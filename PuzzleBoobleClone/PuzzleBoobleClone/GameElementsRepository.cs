@@ -19,6 +19,7 @@ namespace PuzzleBoobleClone
             this.Elements = new List<GameElement>();
             this.Elements.Add(new BagAndLauncherMachine());
             this.Elements.Add(new AimingArrow());
+            this.Elements.Add(new Bobbles());
         }
 
         public void LoadContent(Game1 game)

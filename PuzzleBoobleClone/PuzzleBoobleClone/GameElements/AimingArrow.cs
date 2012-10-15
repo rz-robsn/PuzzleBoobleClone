@@ -13,6 +13,9 @@ namespace PuzzleBoobleClone.GameElements
         private static Rectangle SPRITE_RECTANGLE = new Rectangle(0, 514, 23, 56);
         private static Vector2 ROTATION_CENTER = new Vector2(11, 32.5f);
 
+        private static float ANGLE_LOWER_BOUND = (float)Math.PI / 12;
+        private static float ANGLE_HIGHER_BOUND = 11 * (float)Math.PI / 12;
+
         private Vector2 Position = new Vector2(317, 384);
         private float angle = (float)Math.PI/2;
         private float RotationSpeed = (float)Math.PI/90;
@@ -25,12 +28,12 @@ namespace PuzzleBoobleClone.GameElements
 
             if (keyBoardState.IsKeyDown(Keys.Right))
             {
-                angle = MathHelper.Clamp(angle + RotationSpeed, 0, (float)Math.PI);
+                angle = MathHelper.Clamp(angle + RotationSpeed, ANGLE_LOWER_BOUND, ANGLE_HIGHER_BOUND);
             }
 
             if (keyBoardState.IsKeyDown(Keys.Left))
             {
-                angle = MathHelper.Clamp(angle - RotationSpeed, 0, (float)Math.PI);
+                angle = MathHelper.Clamp(angle - RotationSpeed, ANGLE_LOWER_BOUND, ANGLE_HIGHER_BOUND);
             }
         }
 
