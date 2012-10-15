@@ -93,7 +93,6 @@ namespace PuzzleBoobleClone
 
             spriteBatch.Begin();
 
-            //spriteBatch.Draw(backGround, new Vector2(0, 0), Color.White);
             spriteBatch.Draw(backGround, new Vector2(0, 0), null, Color.White, 0.0f, new Vector2(0, 0), 2f, SpriteEffects.None, 1);
             GameElements.Draw(gameTime, spriteBatch, this);
 
