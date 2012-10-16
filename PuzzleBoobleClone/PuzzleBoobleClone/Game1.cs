@@ -19,8 +19,6 @@ namespace PuzzleBoobleClone
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Texture2D backGround;
-
         public GameElementsRepository GameElements;
 
         public Game1()
@@ -55,7 +53,6 @@ namespace PuzzleBoobleClone
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            this.backGround = Content.Load<Texture2D>("Images/background");
             this.GameElements.LoadContent(this);
         }
 
@@ -93,7 +90,6 @@ namespace PuzzleBoobleClone
 
             spriteBatch.Begin();
 
-            spriteBatch.Draw(backGround, new Vector2(0, 0), null, Color.White, 0.0f, new Vector2(0, 0), 2f, SpriteEffects.None, 1);
             GameElements.Draw(gameTime, spriteBatch, this);
 
             spriteBatch.End();
