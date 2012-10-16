@@ -91,7 +91,6 @@ namespace PuzzleBoobleClone
             spriteBatch.Begin();
 
             GameElements.Draw(gameTime, spriteBatch, this);
-
             spriteBatch.End();
 
             base.Draw(gameTime);
