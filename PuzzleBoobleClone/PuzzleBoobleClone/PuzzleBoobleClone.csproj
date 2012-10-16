@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="GameElements\AimingArrow.cs" />
     <Compile Include="GameElements\BackGround.cs" />
+    <Compile Include="GameElements\Ball.cs" />
     <Compile Include="GameElements\Bobbles.cs" />
     <Compile Include="GameElements\GameElement.cs" />
     <Compile Include="GameElements\BagAndLauncherMachine.cs" />
