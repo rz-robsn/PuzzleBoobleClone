@@ -58,7 +58,7 @@ namespace PuzzleBoobleClone.GameElements
         /// </summary>
         public Vector2 GetDirectionVector()
         {
-            return new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+            return new Vector2(-(float)Math.Cos(angle), -(float)Math.Sin(angle));
         }
     }
 }

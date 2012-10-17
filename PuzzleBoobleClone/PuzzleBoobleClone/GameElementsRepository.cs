@@ -17,12 +17,14 @@ namespace PuzzleBoobleClone
 
         public GameElementsRepository()
         {
+            AimingArrow arrow = new AimingArrow();
+
             this.Elements = new List<GameElement>();
             this.Elements.Add(new BackGround());
             this.Elements.Add(new BagAndLauncherMachine());
-            this.Elements.Add(new AimingArrow());
+            this.Elements.Add(arrow);
             this.Elements.Add(new Bobbles());
-            this.Elements.Add(new BallsRepository());
+            this.Elements.Add(new BallsRepository(arrow));
         }
 
         public void LoadContent(Game1 game)

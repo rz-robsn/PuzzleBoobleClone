@@ -4,31 +4,58 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace PuzzleBoobleClone.GameElements
 {
     public class BallsRepository : GameElement
     {
+        private static readonly Vector2 CURRENT_BALL_POSITION = new Vector2(301, 365);
+        private static readonly Vector2 NEXT_BALL_POSITION = new Vector2(232, 400);
+
+        private static float MOVING_BALL_SPEED = 18;
+
+        /// <summary>
+        /// The Bounds Of the Ball Field.
+        /// </summary>
+        private static Rectangle RectangleBounds = new Rectangle(189, 45, 259, 322);
+
         /// <summary>
         /// The Next Ball that is going to be thrown
         /// </summary>
         public Ball CurrentBall;
-        private static readonly Vector2 CURRENT_BALL_POSITION = new Vector2(301, 365);
 
         /// <summary>
         /// The Next Ball to throw After the Current Ball
         /// </summary>
         public Ball NextBall;
-        private static readonly Vector2 NEXT_BALL_POSITION = new Vector2(232, 400);
 
-        public BallsRepository() 
+        private AimingArrow Arrow;
+        private KeyboardState PreviousKeyState;
+
+        public BallsRepository(AimingArrow arrow) 
         {
+            Arrow = arrow;
+
             CurrentBall = new Ball(CURRENT_BALL_POSITION, GetRandomBallColor());
             NextBall = new Ball(NEXT_BALL_POSITION, GetRandomBallColor());
         }
 
         public void Update(GameTime gameTime, Game1 game)
         {
+            KeyboardState state = Keyboard.GetState();
+            if (state.IsKeyDown(Keys.Space) && !PreviousKeyState.IsKeyDown(Keys.Space)
+                && !CurrentBall.IsMoving())
+            {
+                ThrowCurrentBall();
+            }
+            PreviousKeyState = state;
+
+            if (BallCollideWithSideBounds(CurrentBall))
+            {
+                CurrentBall.Direction.X *= -1;
+            }
+
             CurrentBall.Update(gameTime, game);
             NextBall.Update(gameTime, game);
         }
@@ -37,6 +64,25 @@ namespace PuzzleBoobleClone.GameElements
         {
             CurrentBall.Draw(gameTime, spriteBatch, game);
             NextBall.Draw(gameTime, spriteBatch, game);
+        }
+
+        public void ThrowCurrentBall() 
+        {
+            CurrentBall.Direction = Arrow.GetDirectionVector();
+            CurrentBall.Speed = MOVING_BALL_SPEED;
+        }
+
+        private static bool BallCollideWithSideBounds(Ball ball) 
+        {
+            Rectangle ballRectangle = ball.Rectangle;
+
+            return (ballRectangle.Left < RectangleBounds.Left && RectangleBounds.Left < ballRectangle.Right)
+                    || (ballRectangle.Left < RectangleBounds.Right && RectangleBounds.Right < ballRectangle.Right);
+        }
+
+        private static bool BallRectangleCollidesWithBottomBound(Ball ball)
+        {
+            return ball.Rectangle.Top < RectangleBounds.Bottom && RectangleBounds.Bottom < ball.Rectangle.Bottom;
         }
 
         private static Ball.BallColor GetRandomBallColor() 

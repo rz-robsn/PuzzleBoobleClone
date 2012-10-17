@@ -15,15 +15,16 @@ namespace PuzzleBoobleClone.GameElements
         public BallColor Color;
         public Vector2 Direction;
         public float Speed;
+        public Rectangle Rectangle;
 
-        private Rectangle BallRectangle;
+        private Rectangle SourceRectangle;
 
         public Ball(Vector2 position, BallColor color)
         {
             Position = position;
             Color = color;
 
-            BallRectangle = GetColorRectangle(color);
+            SourceRectangle = GetColorRectangle(color);
 
             Direction = new Vector2(0, 0);
             Speed = 0;
@@ -32,6 +33,7 @@ namespace PuzzleBoobleClone.GameElements
         public void Update(GameTime gameTime, Game1 game)
         {
             Position += Speed * Direction;
+            Rectangle = new Rectangle((int)Position.X, (int)Position.Y, SourceRectangle.Width, SourceRectangle.Y);
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Game1 game)
@@ -39,7 +41,7 @@ namespace PuzzleBoobleClone.GameElements
             spriteBatch.Draw(
                 texture: game.GameElements.SpriteSheet,
                 position: Position,
-                sourceRectangle: BallRectangle,
+                sourceRectangle: SourceRectangle,
                 color: Microsoft.Xna.Framework.Color.White,
                 rotation: 0,
                 origin: Vector2.Zero,
@@ -47,6 +49,11 @@ namespace PuzzleBoobleClone.GameElements
                 effects: SpriteEffects.None,
                 layerDepth: 0.6f
             );
+        }
+
+        public bool IsMoving() 
+        {
+            return Speed > 0;
         }
 
         private static Rectangle GetColorRectangle(BallColor color)
