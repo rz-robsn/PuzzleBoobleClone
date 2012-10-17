@@ -10,8 +10,8 @@ namespace PuzzleBoobleClone.GameElements
 {
     public class AimingArrow : GameElement
     {
-        private static Rectangle SPRITE_RECTANGLE = new Rectangle(0, 514, 23, 56);
-        private static Vector2 ROTATION_CENTER = new Vector2(11, 32.5f);
+        private static readonly Rectangle SPRITE_RECTANGLE = new Rectangle(0, 514, 23, 56);
+        private static readonly Vector2 ROTATION_CENTER = new Vector2(11, 32.5f);
 
         private static float ANGLE_LOWER_BOUND = (float)Math.PI / 12;
         private static float ANGLE_HIGHER_BOUND = 11 * (float)Math.PI / 12;

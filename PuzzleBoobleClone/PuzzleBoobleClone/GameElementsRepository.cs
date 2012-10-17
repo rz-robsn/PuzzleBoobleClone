@@ -22,7 +22,7 @@ namespace PuzzleBoobleClone
             this.Elements.Add(new BagAndLauncherMachine());
             this.Elements.Add(new AimingArrow());
             this.Elements.Add(new Bobbles());
-            this.Elements.Add(new Ball(Vector2.Zero, Ball.BallColor.Blue));
+            this.Elements.Add(new BallsRepository());
         }
 
         public void LoadContent(Game1 game)
