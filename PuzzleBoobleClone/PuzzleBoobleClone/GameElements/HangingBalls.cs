@@ -12,7 +12,7 @@ namespace PuzzleBoobleClone.GameElements
         private static int NUMBER_OF_ROWS = 12;
         private static int NUMBER_OF_COLUMNS_EVEN = 8;
         private static int NUMBER_OF_COLUMNS_ODD = 7;
-        private static int ODD_ROW_OFFSET = 10;
+        private static int ODD_ROW_OFFSET = 16;
         
         /// <summary>
         /// Top Left Position of the Top Left Slot
@@ -91,11 +91,11 @@ namespace PuzzleBoobleClone.GameElements
 
             if (rowIndex % 2 == 0)
             {
-                ball.Position = Position + new Vector2(colIndex * Ball.SRC_RECTANGLE_WIDTH, rowIndex * Ball.SRC_RECTANGLE_HEIGHT);
+                ball.Position = Position + new Vector2(colIndex * Ball.RECTANGLE_WIDTH, rowIndex * Ball.RECTANGLE_HEIGHT);
             }
             else 
             {
-                ball.Position = Position + new Vector2(ODD_ROW_OFFSET + colIndex * Ball.SRC_RECTANGLE_WIDTH, rowIndex * Ball.SRC_RECTANGLE_HEIGHT);
+                ball.Position = Position + new Vector2(ODD_ROW_OFFSET + colIndex * Ball.RECTANGLE_WIDTH, rowIndex * Ball.RECTANGLE_HEIGHT);
             }
         }
 

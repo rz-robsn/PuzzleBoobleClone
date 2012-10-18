@@ -10,7 +10,7 @@ namespace PuzzleBoobleClone.GameElements
 {
     public class BallsRepository : GameElement
     {
-        private static readonly Vector2 CURRENT_BALL_POSITION = new Vector2(301, 365);
+        private static readonly Vector2 CURRENT_BALL_POSITION = new Vector2(303, 365);
         private static readonly Vector2 NEXT_BALL_POSITION = new Vector2(232, 400);
 
         private static float MOVING_BALL_SPEED = 18;
