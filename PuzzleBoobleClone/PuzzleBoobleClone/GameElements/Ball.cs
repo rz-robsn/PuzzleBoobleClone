@@ -17,6 +17,10 @@ namespace PuzzleBoobleClone.GameElements
         /// </summary>
         private static Point SPRITE_BALL_TOP_LEFT = new Point(18, 260);
 
+        private static int SPRITE_BALL_ROW_HEIGHT = 26;
+        private static int SPRITE_BALL_COLUMN_WIDTH = 306;
+
+
         public static int RECTANGLE_WIDTH = 2 * SRC_RECTANGLE_WIDTH;
         public static int RECTANGLE_HEIGHT = 2 * SRC_RECTANGLE_HEIGHT-5;
 
@@ -69,20 +73,55 @@ namespace PuzzleBoobleClone.GameElements
 
         private static Rectangle GetColorRectangle(BallColor color)
         {
+            int top = 0;
+            int left = 0;
+
             switch (color)
             {
-                case BallColor.Blue: return new Rectangle(SPRITE_BALL_TOP_LEFT.X, SPRITE_BALL_TOP_LEFT.Y, SRC_RECTANGLE_WIDTH, SRC_RECTANGLE_HEIGHT);
-                case BallColor.DarkGrey: return new Rectangle();
-                case BallColor.Green: return new Rectangle();
-                case BallColor.Orange: return new Rectangle();
-                case BallColor.Purple: return new Rectangle();
-                case BallColor.Red: return new Rectangle();
-                case BallColor.Silver: return new Rectangle();
-                case BallColor.Yellow: return new Rectangle();
+                case BallColor.Blue:
+                    top = 0;
+                    left = 0;
+                    break;
+
+                case BallColor.DarkGrey:
+                    top = 1;
+                    left = 1;
+                    break;
+
+                case BallColor.Green:
+                    top = 0;
+                    left = 1;
+                    break;
+
+                case BallColor.Orange:
+                    top = 2;
+                    left = 1;
+                    break;
+
+                case BallColor.Purple:
+                    top = 3;
+                    left = 1;
+                    break;
+
+                case BallColor.Red:
+                    left = 0;
+                    top = 2;
+                    break;
+
+                case BallColor.Silver:
+                    top = 1;
+                    left = 0;
+                    break;
+
+                case BallColor.Yellow:
+                    top = 3;
+                    left = 0;
+                    break;
 
                 default:
                     throw new Exception(String.Format("color {0} does not exist", color));
             }
+            return new Rectangle(SPRITE_BALL_TOP_LEFT.X + left*SPRITE_BALL_COLUMN_WIDTH, SPRITE_BALL_TOP_LEFT.Y + top*SPRITE_BALL_ROW_HEIGHT, SRC_RECTANGLE_WIDTH, SRC_RECTANGLE_HEIGHT);
         }
     }
 }

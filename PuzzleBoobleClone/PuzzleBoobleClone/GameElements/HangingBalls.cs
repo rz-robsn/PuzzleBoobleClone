@@ -84,10 +84,13 @@ namespace PuzzleBoobleClone.GameElements
 
             // Adding Balls
             SetBallAtPosition(0, 0, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(0, 1, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(0, 2, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(1, 0, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(1, 6, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+            SetBallAtPosition(0, 1, new Ball(Vector2.Zero, Ball.BallColor.DarkGrey));
+            SetBallAtPosition(0, 2, new Ball(Vector2.Zero, Ball.BallColor.Green));
+            SetBallAtPosition(1, 0, new Ball(Vector2.Zero, Ball.BallColor.Orange));
+            SetBallAtPosition(1, 1, new Ball(Vector2.Zero, Ball.BallColor.Purple));
+            SetBallAtPosition(1, 2, new Ball(Vector2.Zero, Ball.BallColor.Red));
+            SetBallAtPosition(1, 4, new Ball(Vector2.Zero, Ball.BallColor.Silver));
+            SetBallAtPosition(1, 5, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
         }
 
         public void Update(GameTime gameTime, Game1 game)
