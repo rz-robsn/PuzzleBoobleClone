@@ -60,7 +60,7 @@ namespace PuzzleBoobleClone.GameElements
             }
 
             HangingBalls.BallSlot interSectingSlot = HangingBalls.BallsIntersectingWithBall(CurrentBall);
-            if (CurrentBall.IsMoving() && interSectingSlot != null)
+            if (CurrentBall.IsMoving() && (interSectingSlot != null || HangingBalls.BallIntersectsWithUpperBounds(CurrentBall)) )
             {
                 HangingBalls.SetBallToNearestSlot(CurrentBall, interSectingSlot);
                 SetCurrentBall(NextBall);

@@ -86,17 +86,7 @@ namespace PuzzleBoobleClone.GameElements
             SetBallAtPosition(0, 0, new Ball(Vector2.Zero, Ball.BallColor.Blue));
             SetBallAtPosition(0, 1, new Ball(Vector2.Zero, Ball.BallColor.Blue));
             SetBallAtPosition(0, 2, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(0, 3, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(0, 4, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(0, 5, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(0, 6, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(0, 7, new Ball(Vector2.Zero, Ball.BallColor.Blue));
             SetBallAtPosition(1, 0, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(1, 1, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(1, 2, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(1, 3, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(1, 4, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(1, 5, new Ball(Vector2.Zero, Ball.BallColor.Blue));
             SetBallAtPosition(1, 6, new Ball(Vector2.Zero, Ball.BallColor.Blue));
         }
 
@@ -147,6 +137,11 @@ namespace PuzzleBoobleClone.GameElements
             ball.Speed = 0;
         }
 
+        public bool BallIntersectsWithUpperBounds(Ball ball) 
+        {
+            return ball.Rectangle.Center.Y < Bounds.Top;
+        }
+
         public BallSlot BallsIntersectingWithBall(Ball ball)
         {
             for (int i = 0; i < NUMBER_OF_ROWS; i++)
@@ -184,22 +179,22 @@ namespace PuzzleBoobleClone.GameElements
             {
                 SetBallAtPosition(nearestRowIndex, nearestColumnIndex, ball);
             }
-            catch (SlotOccupiedException ) 
+            catch (SlotOccupiedException ex) 
             {
-                SetBallAtPosition((int)MathHelper.Clamp(nearestRowIndex+1, 0, NUMBER_OF_ROWS),
-                                  (int)MathHelper.Clamp(nearestColumnIndex, 0, (nearestRowIndex+1) % 2 == 0 ? NUMBER_OF_COLUMNS_EVEN : NUMBER_OF_COLUMNS_ODD), 
+                SetBallAtPosition(GetClampedRowIndex(nearestRowIndex+1),
+                                  GetClampledColumnIndex(nearestRowIndex+1, nearestColumnIndex), 
                                   ball);
             }
         }
 
-        private int GetClampedRowIndex(int rowIndex) 
+        private static int GetClampedRowIndex(int rowIndex) 
         {
-            return (int)MathHelper.Clamp(rowIndex, 0, NUMBER_OF_ROWS);
+            return (int)MathHelper.Clamp(rowIndex, 0, NUMBER_OF_ROWS-1);
         }
 
-        private int GetClampledColumnIndex(int rowIndex, int columnIndex) 
+        private static int GetClampledColumnIndex(int rowIndex, int columnIndex) 
         {
-            return (int)MathHelper.Clamp(columnIndex, 0, (rowIndex + 1) % 2 == 0 ? NUMBER_OF_COLUMNS_EVEN : NUMBER_OF_COLUMNS_ODD);
+            return (int)MathHelper.Clamp(columnIndex, 0, (rowIndex + 1) % 2 == 0 ? NUMBER_OF_COLUMNS_EVEN-1 : NUMBER_OF_COLUMNS_ODD-1);
         }
     }
 }
