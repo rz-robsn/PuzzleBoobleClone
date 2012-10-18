@@ -18,7 +18,7 @@ namespace PuzzleBoobleClone.GameElements
         /// <summary>
         /// The Bounds Of the Ball Field.
         /// </summary>
-        private static Rectangle RectangleBounds = new Rectangle(189, 45, 259, 322);
+        private static Rectangle RectangleBounds = new Rectangle(190, 45, 259, 322);
 
         /// <summary>
         /// The Next Ball that is going to be thrown
@@ -41,7 +41,7 @@ namespace PuzzleBoobleClone.GameElements
 
             CurrentBall = new Ball(CURRENT_BALL_POSITION, GetRandomBallColor());
             NextBall = new Ball(NEXT_BALL_POSITION, GetRandomBallColor());
-            HangingBalls = new HangingBalls(new Vector2(RectangleBounds.Left, RectangleBounds.Top));
+            HangingBalls = new HangingBalls(RectangleBounds);
         }
 
         public void Update(GameTime gameTime, Game1 game)
@@ -57,6 +57,11 @@ namespace PuzzleBoobleClone.GameElements
             if (BallCollideWithSideBounds(CurrentBall))
             {
                 CurrentBall.Direction.X *= -1;
+            }
+
+            if (CurrentBall.IsMoving() && HangingBalls.AnyBallIntersectsWithBall(CurrentBall))
+            {
+                HangingBalls.SetBallToNearestSlot(CurrentBall);
             }
 
             CurrentBall.Update(gameTime, game);
