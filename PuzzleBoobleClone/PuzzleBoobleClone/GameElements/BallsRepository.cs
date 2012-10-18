@@ -39,8 +39,8 @@ namespace PuzzleBoobleClone.GameElements
         {
             Arrow = arrow;
 
-            CurrentBall = new Ball(CURRENT_BALL_POSITION, GetRandomBallColor());
-            NextBall = new Ball(NEXT_BALL_POSITION, GetRandomBallColor());
+            SetCurrentBall(new Ball(CURRENT_BALL_POSITION, GetRandomBallColor()));
+            SetNextBall(new Ball(NEXT_BALL_POSITION, GetRandomBallColor()));
             HangingBalls = new HangingBalls(RectangleBounds);
         }
 
@@ -59,9 +59,12 @@ namespace PuzzleBoobleClone.GameElements
                 CurrentBall.Direction.X *= -1;
             }
 
-            if (CurrentBall.IsMoving() && HangingBalls.AnyBallIntersectsWithBall(CurrentBall))
+            HangingBalls.BallSlot interSectingSlot = HangingBalls.BallsIntersectingWithBall(CurrentBall);
+            if (CurrentBall.IsMoving() && interSectingSlot != null)
             {
-                HangingBalls.SetBallToNearestSlot(CurrentBall);
+                HangingBalls.SetBallToNearestSlot(CurrentBall, interSectingSlot);
+                SetCurrentBall(NextBall);
+                SetNextBall(new Ball(NEXT_BALL_POSITION, GetRandomBallColor()));
             }
 
             CurrentBall.Update(gameTime, game);
@@ -80,6 +83,18 @@ namespace PuzzleBoobleClone.GameElements
         {
             CurrentBall.Direction = Arrow.GetDirectionVector();
             CurrentBall.Speed = MOVING_BALL_SPEED;
+        }
+
+        private void SetCurrentBall(Ball ball) 
+        {
+            CurrentBall = ball;
+            CurrentBall.Position = CURRENT_BALL_POSITION;
+        }
+
+        private void SetNextBall(Ball ball) 
+        {
+            NextBall = ball;
+            NextBall.Position = NEXT_BALL_POSITION;
         }
 
         private static bool BallCollideWithSideBounds(Ball ball) 

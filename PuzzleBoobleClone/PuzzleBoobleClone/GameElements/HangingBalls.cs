@@ -24,6 +24,20 @@ namespace PuzzleBoobleClone.GameElements
             }
         }
 
+        public class SlotOccupiedException : Exception
+        {
+            public int RowIndex;
+            public int ColumnIndex;
+
+            public SlotOccupiedException(int rowIndex, int columnIndex)
+                : base(String.Format("There is already a ball at Slot ({0},{1})",
+                            rowIndex.ToString(), columnIndex.ToString()))
+            {
+                RowIndex = rowIndex;
+                ColumnIndex = columnIndex;
+            }        
+        }
+
         private static int NUMBER_OF_ROWS = 12;
         private static int NUMBER_OF_COLUMNS_EVEN = 8;
         private static int NUMBER_OF_COLUMNS_ODD = 7;
@@ -118,8 +132,7 @@ namespace PuzzleBoobleClone.GameElements
         {
             if (Balls.ElementAt(rowIndex).ElementAt(colIndex) != null)
             {
-                throw new Exception(String.Format("There is already a ball {0} at position ({1},{2})",
-                                                    ball, rowIndex.ToString(), colIndex.ToString()));
+                throw new SlotOccupiedException(rowIndex, colIndex);
             }
             Balls.ElementAt(rowIndex).Insert(colIndex, ball);
 
@@ -134,39 +147,59 @@ namespace PuzzleBoobleClone.GameElements
             ball.Speed = 0;
         }
 
-        public bool AnyBallIntersectsWithBall(Ball ball)
+        public BallSlot BallsIntersectingWithBall(Ball ball)
         {
-            foreach (List<Ball> list in Balls)
+            for (int i = 0; i < NUMBER_OF_ROWS; i++)
             {
-                foreach (Ball b in list)
+                for (int j = 0; j < (i % 2 == 0 ? NUMBER_OF_COLUMNS_EVEN : NUMBER_OF_COLUMNS_ODD); j++)
                 {
+                    Ball b = Balls.ElementAt(i).ElementAt(j);
                     if (b != null && b.Rectangle.Intersects(ball.Rectangle))
                     {
-                        return true;
+                        return new BallSlot(i, j);
                     }
                 }
             }
-            return false;
+            return null;
         }
 
-        public void SetBallToNearestSlot(Ball ball)
+        public void SetBallToNearestSlot(Ball ball, BallSlot interSectingSlot)
         {
-            float nearestRowRatio = Math.Abs(ball.Rectangle.Center.Y - Position.Y) / Bounds.Height;
-            int nearestRowIndex = (int)Math.Floor(nearestRowRatio * NUMBER_OF_ROWS);
+            float nearestRowRatio = Math.Abs(ball.Rectangle.Center.Y - Position.Y) / (Ball.RECTANGLE_HEIGHT * NUMBER_OF_ROWS);
+            int nearestRowIndex = (int)MathHelper.Clamp( (float)Math.Floor(nearestRowRatio * NUMBER_OF_ROWS), 0, NUMBER_OF_ROWS-1);
 
             int nearestColumnIndex;
             if (nearestRowIndex % 2 == 0)
             {
                 float nearestColumnRatio = Math.Abs(ball.Rectangle.Center.X - Position.X) / Bounds.Width;
-                nearestColumnIndex = (int)Math.Floor(nearestColumnRatio * NUMBER_OF_COLUMNS_EVEN);
+                nearestColumnIndex = (int)MathHelper.Clamp((float)Math.Floor(nearestColumnRatio * NUMBER_OF_COLUMNS_EVEN), 0, NUMBER_OF_COLUMNS_EVEN-1);
             }
             else
             {
-                float nearestColumnRatio = Math.Abs(ball.Position.X - Position.X + ODD_ROW_OFFSET) / (Bounds.Width - ODD_ROW_OFFSET);
-                nearestColumnIndex = (int)MathHelper.Clamp((float)Math.Floor(nearestColumnRatio * NUMBER_OF_COLUMNS_EVEN), 0, ODD_ROW_OFFSET);
+                float nearestColumnRatio = Math.Abs(ball.Rectangle.Center.X - Position.X) / (Bounds.Width);
+                nearestColumnIndex = (int)MathHelper.Clamp((float)Math.Floor(nearestColumnRatio * NUMBER_OF_COLUMNS_ODD), 0, NUMBER_OF_COLUMNS_ODD-1);
             }
 
-            SetBallAtPosition(nearestRowIndex, nearestColumnIndex, ball);
+            try
+            {
+                SetBallAtPosition(nearestRowIndex, nearestColumnIndex, ball);
+            }
+            catch (SlotOccupiedException ) 
+            {
+                SetBallAtPosition((int)MathHelper.Clamp(nearestRowIndex+1, 0, NUMBER_OF_ROWS),
+                                  (int)MathHelper.Clamp(nearestColumnIndex, 0, (nearestRowIndex+1) % 2 == 0 ? NUMBER_OF_COLUMNS_EVEN : NUMBER_OF_COLUMNS_ODD), 
+                                  ball);
+            }
+        }
+
+        private int GetClampedRowIndex(int rowIndex) 
+        {
+            return (int)MathHelper.Clamp(rowIndex, 0, NUMBER_OF_ROWS);
+        }
+
+        private int GetClampledColumnIndex(int rowIndex, int columnIndex) 
+        {
+            return (int)MathHelper.Clamp(columnIndex, 0, (rowIndex + 1) % 2 == 0 ? NUMBER_OF_COLUMNS_EVEN : NUMBER_OF_COLUMNS_ODD);
         }
     }
 }
