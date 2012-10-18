@@ -9,6 +9,9 @@ namespace PuzzleBoobleClone.GameElements
 {
     public class Ball : GameElement
     {
+        public static int SRC_RECTANGLE_WIDTH = 18;
+        public static int SRC_RECTANGLE_HEIGHT = 17;
+
         public enum BallColor { Blue, Green, Red, Yellow, Orange, Purple, Silver, DarkGrey }
 
         public Vector2 Position;
@@ -33,7 +36,7 @@ namespace PuzzleBoobleClone.GameElements
         public void Update(GameTime gameTime, Game1 game)
         {
             Position += Speed * Direction;
-            Rectangle = new Rectangle((int)Position.X, (int)Position.Y, SourceRectangle.Width, SourceRectangle.Y);
+            Rectangle = new Rectangle((int)Position.X, (int)Position.Y, SourceRectangle.Width*2, SourceRectangle.Y*2);
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Game1 game)
@@ -61,12 +64,9 @@ namespace PuzzleBoobleClone.GameElements
             // Coordinate of the Top Left corner of the top Ball (= Blue Ball) on the SpriteSheet
             Point ballTopLeft = new Point(17, 260);
 
-            int ball_width = 18;
-            int ball_height = 17;
-
             switch (color)
             {
-                case BallColor.Blue: return new Rectangle(ballTopLeft.X, ballTopLeft.Y, ball_width, ball_height);
+                case BallColor.Blue: return new Rectangle(ballTopLeft.X, ballTopLeft.Y, SRC_RECTANGLE_WIDTH, SRC_RECTANGLE_HEIGHT);
                 case BallColor.DarkGrey: return new Rectangle();
                 case BallColor.Green: return new Rectangle();
                 case BallColor.Orange: return new Rectangle();

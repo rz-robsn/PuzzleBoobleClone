@@ -30,6 +30,8 @@ namespace PuzzleBoobleClone.GameElements
         /// </summary>
         public Ball NextBall;
 
+        private HangingBalls HangingBalls;
+
         private AimingArrow Arrow;
         private KeyboardState PreviousKeyState;
 
@@ -39,6 +41,7 @@ namespace PuzzleBoobleClone.GameElements
 
             CurrentBall = new Ball(CURRENT_BALL_POSITION, GetRandomBallColor());
             NextBall = new Ball(NEXT_BALL_POSITION, GetRandomBallColor());
+            HangingBalls = new HangingBalls(new Vector2(RectangleBounds.Left, RectangleBounds.Top));
         }
 
         public void Update(GameTime gameTime, Game1 game)
@@ -58,12 +61,14 @@ namespace PuzzleBoobleClone.GameElements
 
             CurrentBall.Update(gameTime, game);
             NextBall.Update(gameTime, game);
+            HangingBalls.Update(gameTime, game);
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Game1 game)
         {
             CurrentBall.Draw(gameTime, spriteBatch, game);
             NextBall.Draw(gameTime, spriteBatch, game);
+            HangingBalls.Draw(gameTime, spriteBatch, game);
         }
 
         public void ThrowCurrentBall() 
