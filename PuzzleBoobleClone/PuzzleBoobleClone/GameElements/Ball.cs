@@ -20,7 +20,6 @@ namespace PuzzleBoobleClone.GameElements
         private static int SPRITE_BALL_ROW_HEIGHT = 26;
         private static int SPRITE_BALL_COLUMN_WIDTH = 306;
 
-
         public static int RECTANGLE_WIDTH = 2 * SRC_RECTANGLE_WIDTH;
         public static int RECTANGLE_HEIGHT = 2 * SRC_RECTANGLE_HEIGHT-5;
 
@@ -70,6 +69,10 @@ namespace PuzzleBoobleClone.GameElements
         {
             return Speed > 0;
         }
+
+        public void Destroy() { }
+
+        public void FallDown() { }
 
         private static Rectangle GetColorRectangle(BallColor color)
         {

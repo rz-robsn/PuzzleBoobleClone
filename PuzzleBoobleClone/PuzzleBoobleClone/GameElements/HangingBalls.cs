@@ -22,6 +22,28 @@ namespace PuzzleBoobleClone.GameElements
                 RowIndex = rowIndex;
                 ColumnIndex = columnIndex;
             }
+
+            public override bool Equals(object obj)
+            {
+                if (!(obj is BallSlot))
+                {
+                    return false;
+                }
+                else 
+                {
+                    return this.Equals((BallSlot)obj);
+                }
+            }
+
+            public bool Equals(BallSlot otherSlot)
+            {
+                return RowIndex == otherSlot.RowIndex && ColumnIndex == otherSlot.ColumnIndex;
+            }
+
+            public override string ToString()
+            {
+                return "Slot(" + RowIndex + "," + ColumnIndex + ")";
+            } 
         }
 
         public class SlotOccupiedException : Exception
@@ -174,20 +196,136 @@ namespace PuzzleBoobleClone.GameElements
             }
             else
             {
-                float nearestColumnRatio = Math.Abs(ball.Rectangle.Center.X - Position.X) / (Bounds.Width);
+                float nearestColumnRatio = Math.Abs(ball.Rectangle.Center.X + ODD_ROW_OFFSET - Position.X) / (Bounds.Width - 2*ODD_ROW_OFFSET) - 0.15f;
                 nearestColumnIndex = (int)MathHelper.Clamp((float)Math.Floor(nearestColumnRatio * NUMBER_OF_COLUMNS_ODD), 0, NUMBER_OF_COLUMNS_ODD-1);
+                System.Diagnostics.Debug.WriteLine("Ratio :" + nearestColumnRatio + " index :" + nearestColumnIndex);
             }
 
             try
             {
                 SetBallAtPosition(nearestRowIndex, nearestColumnIndex, ball);
+                DestroyAlignedPieceAtSlot(nearestRowIndex, nearestColumnIndex);
             }
             catch (SlotOccupiedException ex) 
             {
-                SetBallAtPosition(GetClampedRowIndex(nearestRowIndex+1),
-                                  GetClampledColumnIndex(nearestRowIndex+1, nearestColumnIndex), 
-                                  ball);
+                //nearestRowIndex = GetClampedRowIndex(nearestRowIndex+1);
+                //SetBallAtPosition(GetClampedRowIndex(nearestRowIndex),
+                //                  GetClampledColumnIndex(nearestRowIndex, nearestColumnIndex), 
+                //                  ball);
             }
+        }
+
+        public Ball.BallColor GetRandomColor() 
+        {
+            //return Ball.BallColor.Orange;
+            Random random = new Random();
+            int randomNumber = random.Next(0, 8);
+
+            switch(randomNumber)
+            {
+                case 0:
+                    return Ball.BallColor.Blue;
+                case 1:
+                    return Ball.BallColor.DarkGrey;
+                case 2:
+                    return Ball.BallColor.Green;
+                case 3:
+                    return Ball.BallColor.Orange;
+                case 4:
+                    return Ball.BallColor.Purple;
+                case 5:
+                    return Ball.BallColor.Red;
+                case 6:
+                    return Ball.BallColor.Silver;
+                case 7:
+                    return Ball.BallColor.Yellow;
+                default:
+                    return Ball.BallColor.Blue;
+            }
+        }
+
+        private void DestroyAlignedPieceAtSlot(int rowIndex, int columnIndex)
+        {
+            List<BallSlot> alignedSlots = GetAllPieceOfSameColorAlignedAtSlot(rowIndex, columnIndex);
+
+            if (alignedSlots.Count >= 3) 
+            {
+                alignedSlots.ForEach(slot => DestroyBallAtSlot(slot));
+            }
+        }
+
+        private List<BallSlot> GetAllPieceOfSameColorAlignedAtSlot(int rowIndex, int columnIndex) 
+        {
+            List<BallSlot> slots = new List<BallSlot>();
+            GetAllPieceOfSameColorAlignedAtSlot(rowIndex, columnIndex, GetBallAtSlot(rowIndex, columnIndex).Color, slots);
+            return slots;
+        }
+
+        private void GetAllPieceOfSameColorAlignedAtSlot(int rowIndex, int columnIndex, Ball.BallColor color, List<BallSlot> slots) 
+        {
+            Ball ball = GetBallAtSlot(rowIndex, columnIndex);
+            BallSlot ballSlot = new BallSlot(rowIndex, columnIndex);
+
+            if (ball != null 
+                && ball.Color == color
+                && !slots.Contains(ballSlot))
+            {
+                slots.Add(ballSlot);
+
+                // Check Alignment for Adjacent slots on Upper Row
+                GetAllPieceOfSameColorAlignedAtSlot(
+                    GetClampedRowIndex(rowIndex - 1),
+                    GetClampledColumnIndex(rowIndex - 1, columnIndex),
+                    color,
+                    slots);
+                GetAllPieceOfSameColorAlignedAtSlot(
+                    GetClampedRowIndex(rowIndex - 1),
+                    GetClampledColumnIndex(rowIndex - 1, columnIndex + 1),
+                    color,
+                    slots);
+
+                // Check Alignment for Adjacent slots on Same Row
+                GetAllPieceOfSameColorAlignedAtSlot(
+                    GetClampedRowIndex(rowIndex),
+                    GetClampledColumnIndex(rowIndex, columnIndex-1),
+                    color,
+                    slots);
+
+                GetAllPieceOfSameColorAlignedAtSlot(
+                    GetClampedRowIndex(rowIndex),
+                    GetClampledColumnIndex(rowIndex, columnIndex + 1),
+                    color,
+                    slots);
+
+                // Check Alignment for Adjacent slots on Lower Row
+                GetAllPieceOfSameColorAlignedAtSlot(
+                    GetClampedRowIndex(rowIndex + 1),
+                    GetClampledColumnIndex(rowIndex + 1, columnIndex),
+                    color,
+                    slots);
+                GetAllPieceOfSameColorAlignedAtSlot(
+                    GetClampedRowIndex(rowIndex + 1),
+                    GetClampledColumnIndex(rowIndex + 1, columnIndex + 1),
+                    color,
+                    slots);
+            }
+        }
+
+        private void DestroyBallAtSlot(BallSlot slot) 
+        {
+            Ball ball = GetBallAtSlot(slot);
+            ball.Destroy();
+            Balls.ElementAt(slot.RowIndex).RemoveAt(slot.ColumnIndex);
+        }
+
+        private Ball GetBallAtSlot(BallSlot slot)
+        {
+            return GetBallAtSlot(slot.RowIndex, slot.ColumnIndex);
+        }
+
+        private Ball GetBallAtSlot(int rowIndex, int columnIndex) 
+        {
+            return Balls.ElementAt(rowIndex).ElementAt(columnIndex);
         }
 
         private static int GetClampedRowIndex(int rowIndex) 
@@ -197,7 +335,12 @@ namespace PuzzleBoobleClone.GameElements
 
         private static int GetClampledColumnIndex(int rowIndex, int columnIndex) 
         {
-            return (int)MathHelper.Clamp(columnIndex, 0, (rowIndex + 1) % 2 == 0 ? NUMBER_OF_COLUMNS_EVEN-1 : NUMBER_OF_COLUMNS_ODD-1);
+            return (int)MathHelper.Clamp(columnIndex, 0, GetNumberOfColumnForRow(rowIndex)-1);
+        }
+
+        private static int GetNumberOfColumnForRow(int rowIndex) 
+        {
+            return rowIndex % 2 == 0 ? NUMBER_OF_COLUMNS_EVEN : NUMBER_OF_COLUMNS_ODD;
         }
     }
 }

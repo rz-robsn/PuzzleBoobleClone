@@ -13,7 +13,7 @@ namespace PuzzleBoobleClone.GameElements
         private static readonly Vector2 CURRENT_BALL_POSITION = new Vector2(303, 365);
         private static readonly Vector2 NEXT_BALL_POSITION = new Vector2(232, 400);
 
-        private static float MOVING_BALL_SPEED = 18;
+        private static float MOVING_BALL_SPEED = 12;
 
         /// <summary>
         /// The Bounds Of the Ball Field.
@@ -39,9 +39,9 @@ namespace PuzzleBoobleClone.GameElements
         {
             Arrow = arrow;
 
-            SetCurrentBall(new Ball(CURRENT_BALL_POSITION, GetRandomBallColor()));
-            SetNextBall(new Ball(NEXT_BALL_POSITION, GetRandomBallColor()));
             HangingBalls = new HangingBalls(RectangleBounds);
+            SetCurrentBall(new Ball(CURRENT_BALL_POSITION, HangingBalls.GetRandomColor()));
+            SetNextBall(new Ball(NEXT_BALL_POSITION, HangingBalls.GetRandomColor()));
         }
 
         public void Update(GameTime gameTime, Game1 game)
@@ -64,7 +64,7 @@ namespace PuzzleBoobleClone.GameElements
             {
                 HangingBalls.SetBallToNearestSlot(CurrentBall, interSectingSlot);
                 SetCurrentBall(NextBall);
-                SetNextBall(new Ball(NEXT_BALL_POSITION, GetRandomBallColor()));
+                SetNextBall(new Ball(NEXT_BALL_POSITION, HangingBalls.GetRandomColor()));
             }
 
             CurrentBall.Update(gameTime, game);
@@ -108,11 +108,6 @@ namespace PuzzleBoobleClone.GameElements
         private static bool BallRectangleCollidesWithBottomBound(Ball ball)
         {
             return ball.Rectangle.Top < RectangleBounds.Bottom && RectangleBounds.Bottom < ball.Rectangle.Bottom;
-        }
-
-        private static Ball.BallColor GetRandomBallColor() 
-        {
-            return Ball.BallColor.Blue;
         }
     }
 }
