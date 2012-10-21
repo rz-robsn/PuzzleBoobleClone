@@ -105,14 +105,36 @@ namespace PuzzleBoobleClone.GameElements
             }
 
             // Adding Balls
-            SetBallAtPosition(0, 0, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(0, 1, new Ball(Vector2.Zero, Ball.BallColor.DarkGrey));
-            SetBallAtPosition(0, 2, new Ball(Vector2.Zero, Ball.BallColor.Green));
-            SetBallAtPosition(1, 0, new Ball(Vector2.Zero, Ball.BallColor.Orange));
-            SetBallAtPosition(1, 1, new Ball(Vector2.Zero, Ball.BallColor.Purple));
-            SetBallAtPosition(1, 2, new Ball(Vector2.Zero, Ball.BallColor.Red));
-            SetBallAtPosition(1, 4, new Ball(Vector2.Zero, Ball.BallColor.Silver));
-            SetBallAtPosition(1, 5, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+            SetBallAtPosition(0, 0, new Ball(Vector2.Zero, Ball.BallColor.Red));
+            SetBallAtPosition(0, 1, new Ball(Vector2.Zero, Ball.BallColor.Red));
+            SetBallAtPosition(0, 2, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+            SetBallAtPosition(0, 3, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+            SetBallAtPosition(0, 4, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+            SetBallAtPosition(0, 5, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+            SetBallAtPosition(0, 6, new Ball(Vector2.Zero, Ball.BallColor.Green));
+            SetBallAtPosition(0, 7, new Ball(Vector2.Zero, Ball.BallColor.Green));
+            SetBallAtPosition(1, 0, new Ball(Vector2.Zero, Ball.BallColor.Red));
+            SetBallAtPosition(1, 1, new Ball(Vector2.Zero, Ball.BallColor.Red));
+            SetBallAtPosition(1, 2, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+            SetBallAtPosition(1, 3, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+            SetBallAtPosition(1, 4, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+            SetBallAtPosition(1, 5, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+            SetBallAtPosition(1, 6, new Ball(Vector2.Zero, Ball.BallColor.Green));
+            SetBallAtPosition(2, 0, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+            SetBallAtPosition(2, 1, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+            SetBallAtPosition(2, 2, new Ball(Vector2.Zero, Ball.BallColor.Green));
+            SetBallAtPosition(2, 3, new Ball(Vector2.Zero, Ball.BallColor.Green));
+            SetBallAtPosition(2, 4, new Ball(Vector2.Zero, Ball.BallColor.Red));
+            SetBallAtPosition(2, 5, new Ball(Vector2.Zero, Ball.BallColor.Red));
+            SetBallAtPosition(2, 6, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+            SetBallAtPosition(2, 7, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+            SetBallAtPosition(3, 0, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+            SetBallAtPosition(3, 1, new Ball(Vector2.Zero, Ball.BallColor.Green));
+            SetBallAtPosition(3, 2, new Ball(Vector2.Zero, Ball.BallColor.Green));
+            SetBallAtPosition(3, 3, new Ball(Vector2.Zero, Ball.BallColor.Red));
+            SetBallAtPosition(3, 4, new Ball(Vector2.Zero, Ball.BallColor.Red));
+            SetBallAtPosition(3, 5, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+            SetBallAtPosition(3, 6, new Ball(Vector2.Zero, Ball.BallColor.Yellow));  
         }
 
         public void Update(GameTime gameTime, Game1 game)
@@ -192,18 +214,33 @@ namespace PuzzleBoobleClone.GameElements
             if (nearestRowIndex % 2 == 0)
             {
                 float nearestColumnRatio = Math.Abs(ball.Rectangle.Center.X - Position.X) / Bounds.Width;
+
                 nearestColumnIndex = (int)MathHelper.Clamp((float)Math.Floor(nearestColumnRatio * NUMBER_OF_COLUMNS_EVEN), 0, NUMBER_OF_COLUMNS_EVEN-1);
             }
             else
             {
-                float nearestColumnRatio = Math.Abs(ball.Rectangle.Center.X + ODD_ROW_OFFSET - Position.X) / (Bounds.Width - 2*ODD_ROW_OFFSET) - 0.15f;
+                float nearestColumnRatio = Math.Abs(ball.Rectangle.Center.X + ODD_ROW_OFFSET - Position.X) / (Bounds.Width - 2*ODD_ROW_OFFSET);
                 nearestColumnIndex = (int)MathHelper.Clamp((float)Math.Floor(nearestColumnRatio * NUMBER_OF_COLUMNS_ODD), 0, NUMBER_OF_COLUMNS_ODD-1);
             }
 
             try
             {
+                if (GetAllBallsAdjacentToSlot(new BallSlot(nearestRowIndex, nearestColumnIndex)).Count == 0) 
+                {
+                     nearestColumnIndex = (ball.Direction.X > 0) ? GetClampledColumnIndex(nearestRowIndex, nearestColumnIndex + 1) 
+                                                                : GetClampledColumnIndex(nearestRowIndex, nearestColumnIndex - 1);
+
+                     if (GetAllBallsAdjacentToSlot(new BallSlot(nearestRowIndex, nearestColumnIndex)).Count == 0) 
+                     {
+                         nearestColumnIndex = (ball.Direction.X > 0) ? GetClampledColumnIndex(nearestRowIndex, nearestColumnIndex - 2)
+                                                                    : GetClampledColumnIndex(nearestRowIndex, nearestColumnIndex + 2);
+                     
+                     }
+                }
+                 
                 SetBallAtPosition(nearestRowIndex, nearestColumnIndex, ball);
                 DestroyAlignedPieceAtSlot(nearestRowIndex, nearestColumnIndex);
+                FallDownAllBallsWithNoUpperAdjacentBalls();
             }
             catch (SlotOccupiedException ex) 
             {
@@ -270,12 +307,32 @@ namespace PuzzleBoobleClone.GameElements
             }
         }
 
+        private void FallDownAllBallsWithNoUpperAdjacentBalls() 
+        {
+            List<BallSlot> slots = GetAllBallsWithNoUpperAndSameRowAdjacentBalls();
+            if(slots.Count > 0)
+            {
+                slots.ForEach(slot => FallBallAtSlot(slot));
+                FallDownAllBallsWithNoUpperAdjacentBalls();
+            }    
+        }
+
         private void DestroyBallAtSlot(BallSlot slot) 
         {
             Ball ball = GetBallAtSlot(slot);
             if (ball != null)
             {
                 ball.Destroy();
+            }
+            Balls[slot.RowIndex][slot.ColumnIndex] = null;
+        }
+
+        private void FallBallAtSlot(BallSlot slot) 
+        {
+            Ball ball = GetBallAtSlot(slot);
+            if (ball != null) 
+            {
+                ball.FallDown();
             }
             Balls[slot.RowIndex][slot.ColumnIndex] = null;
         }
@@ -290,7 +347,109 @@ namespace PuzzleBoobleClone.GameElements
             return Balls.ElementAt(rowIndex).ElementAt(columnIndex);
         }
 
-        private List<BallSlot> GetAllAdjacentSlots(BallSlot slot) 
+        private List<BallSlot> GetAllBallsAdjacentToSlot(BallSlot ballSlot)
+        {
+            List<BallSlot> slots = new List<BallSlot>(6);
+
+            foreach (BallSlot slot in GetAllAdjacentSlots(ballSlot))
+            {
+                if (GetBallAtSlot(slot) != null)
+                {
+                    slots.Add(slot);
+                }
+            }
+
+            return slots;
+        }
+
+        private static List<BallSlot> GetAllAdjacentUpperSlots(BallSlot slot) 
+        {
+            List<BallSlot> slots = new List<BallSlot>(6);
+
+            if (slot.RowIndex % 2 == 0)
+            {
+                slots.Add(new BallSlot(GetClampedRowIndex(slot.RowIndex - 1), GetClampledColumnIndex(slot.RowIndex - 1, slot.ColumnIndex - 1)));
+                slots.Add(new BallSlot(GetClampedRowIndex(slot.RowIndex - 1), GetClampledColumnIndex(slot.RowIndex - 1, slot.ColumnIndex)));
+            }
+            else
+            {
+                slots.Add(new BallSlot(GetClampedRowIndex(slot.RowIndex - 1), GetClampledColumnIndex(slot.RowIndex - 1, slot.ColumnIndex)));
+                slots.Add(new BallSlot(GetClampedRowIndex(slot.RowIndex - 1), GetClampledColumnIndex(slot.RowIndex - 1, slot.ColumnIndex + 1)));
+            }
+
+            return slots;
+        }
+
+        private List<BallSlot> GetAllBallsWithNoUpperAndSameRowAdjacentBalls()
+        {
+            List<BallSlot> slots = new List<BallSlot>();
+
+            for (int i = 1; i < NUMBER_OF_ROWS; i++)
+            {
+                List<BallSlot> slotListCandidate = new List<BallSlot>();
+                for (int j = 0; j < GetNumberOfColumnForRow(i); j++)
+                {
+                    BallSlot slot = new BallSlot(i, j);
+
+                    if(GetBallAtSlot(slot) != null)
+                    {
+                        if(GetBallsForSlots(GetAllAdjacentUpperSlots(slot)).All(ball => ball == null))
+                        {
+                            slotListCandidate.Add(slot);
+                            if (j + 1 >= GetNumberOfColumnForRow(i))
+                            {
+                                slots.AddRange(slotListCandidate);
+                            }
+                        }
+                        else
+                        {
+                            slotListCandidate = new List<BallSlot>();
+                        }
+                    }
+                    else if (slotListCandidate.Count > 0)
+                    {
+                        slots.AddRange(slotListCandidate);
+                    }
+                }
+            }
+
+            return slots;
+        }
+
+        private List<Ball> GetBallsForSlots(List<BallSlot> slots)
+        {
+            return slots.ConvertAll<Ball>(slot => GetBallAtSlot(slot));
+        }
+
+        private static List<BallSlot> GetAllAdjacentLowerSlots(BallSlot slot)
+        {
+            List<BallSlot> slots = new List<BallSlot>(6);
+
+            if (slot.RowIndex % 2 == 0)
+            {
+                slots.Add(new BallSlot(GetClampedRowIndex(slot.RowIndex + 1), GetClampledColumnIndex(slot.RowIndex + 1, slot.ColumnIndex - 1)));
+                slots.Add(new BallSlot(GetClampedRowIndex(slot.RowIndex + 1), GetClampledColumnIndex(slot.RowIndex + 1, slot.ColumnIndex)));
+            }
+            else
+            {
+                slots.Add(new BallSlot(GetClampedRowIndex(slot.RowIndex + 1), GetClampledColumnIndex(slot.RowIndex + 1, slot.ColumnIndex)));
+                slots.Add(new BallSlot(GetClampedRowIndex(slot.RowIndex + 1), GetClampledColumnIndex(slot.RowIndex + 1, slot.ColumnIndex + 1)));
+            }
+
+            return slots;
+        }
+
+        private static List<BallSlot> GetAdjacentSlotsOnSameRow(BallSlot slot)
+        {
+            List<BallSlot> slots = new List<BallSlot>(6);
+
+            slots.Add(new BallSlot(GetClampedRowIndex(slot.RowIndex), GetClampledColumnIndex(slot.RowIndex, slot.ColumnIndex - 1)));
+            slots.Add(new BallSlot(GetClampedRowIndex(slot.RowIndex), GetClampledColumnIndex(slot.RowIndex, slot.ColumnIndex + 1)));
+
+            return slots;
+        }
+
+        private static List<BallSlot> GetAllAdjacentSlots(BallSlot slot) 
         {
             List<BallSlot> slots = new List<BallSlot>(6);
 
