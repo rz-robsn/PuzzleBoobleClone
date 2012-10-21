@@ -216,7 +216,6 @@ namespace PuzzleBoobleClone.GameElements
 
         public Ball.BallColor GetRandomColor() 
         {
-            return Ball.BallColor.Orange;
             Random random = new Random();
             int randomNumber = random.Next(0, 8);
 
