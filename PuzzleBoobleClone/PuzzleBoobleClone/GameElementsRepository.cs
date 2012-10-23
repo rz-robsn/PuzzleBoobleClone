@@ -10,6 +10,7 @@ namespace PuzzleBoobleClone
 {   
     public class GameElementsRepository : GameElement
     {
+
         private List<GameElement> Elements;
 
         public Texture2D BackGround;
@@ -18,13 +19,14 @@ namespace PuzzleBoobleClone
         public GameElementsRepository()
         {
             AimingArrow arrow = new AimingArrow();
+            Bounds bounds = new Bounds();
 
             this.Elements = new List<GameElement>();
             this.Elements.Add(new BackGround());
             this.Elements.Add(new BagAndLauncherMachine());
             this.Elements.Add(arrow);
             this.Elements.Add(new Bobbles());
-            this.Elements.Add(new BallsRepository(arrow));
+            this.Elements.Add(new BallsRepository(arrow, bounds));
         }
 
         public void LoadContent(Game1 game)
@@ -37,10 +39,15 @@ namespace PuzzleBoobleClone
         {
             Elements.ForEach(e => e.Update(gameTime, game));
         }
-
+            
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Game1 game)
         {
             Elements.ForEach(e => e.Draw(gameTime, spriteBatch, game));
+        }
+
+        public void PlayerLost() 
+        {
+        
         }
     }
 }

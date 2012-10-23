@@ -16,11 +16,6 @@ namespace PuzzleBoobleClone.GameElements
         private static float MOVING_BALL_SPEED = 12;
 
         /// <summary>
-        /// The Bounds Of the Ball Field.
-        /// </summary>
-        private static Rectangle RectangleBounds = new Rectangle(190, 45, 259, 322);
-
-        /// <summary>
         /// The Next Ball that is going to be thrown
         /// </summary>
         public Ball CurrentBall;
@@ -33,13 +28,16 @@ namespace PuzzleBoobleClone.GameElements
         private HangingBalls HangingBalls;
 
         private AimingArrow Arrow;
+        private Bounds FieldBounds;
+
         private KeyboardState PreviousKeyState;
 
-        public BallsRepository(AimingArrow arrow) 
+        public BallsRepository(AimingArrow arrow, Bounds bounds) 
         {
             Arrow = arrow;
+            FieldBounds = bounds;
 
-            HangingBalls = new HangingBalls(RectangleBounds);
+            HangingBalls = new HangingBalls(bounds.Rectangle);
             SetCurrentBall(new Ball(CURRENT_BALL_POSITION, HangingBalls.GetRandomColor()));
             SetNextBall(new Ball(NEXT_BALL_POSITION, HangingBalls.GetRandomColor()));
         }
@@ -97,17 +95,17 @@ namespace PuzzleBoobleClone.GameElements
             NextBall.Position = NEXT_BALL_POSITION;
         }
 
-        private static bool BallCollideWithSideBounds(Ball ball) 
+        private bool BallCollideWithSideBounds(Ball ball) 
         {
             Rectangle ballRectangle = ball.Rectangle;
 
-            return (ballRectangle.Left < RectangleBounds.Left && RectangleBounds.Left < ballRectangle.Right)
-                    || (ballRectangle.Left < RectangleBounds.Right && RectangleBounds.Right < ballRectangle.Right);
+            return (ballRectangle.Left < FieldBounds.Rectangle.Left && FieldBounds.Rectangle.Left < ballRectangle.Right)
+                    || (ballRectangle.Left < FieldBounds.Rectangle.Right && FieldBounds.Rectangle.Right < ballRectangle.Right);
         }
 
-        private static bool BallRectangleCollidesWithBottomBound(Ball ball)
+        private bool BallRectangleCollidesWithBottomBound(Ball ball)
         {
-            return ball.Rectangle.Top < RectangleBounds.Bottom && RectangleBounds.Bottom < ball.Rectangle.Bottom;
+            return ball.Rectangle.Top < FieldBounds.Rectangle.Bottom && FieldBounds.Rectangle.Bottom < ball.Rectangle.Bottom;
         }
     }
 }
