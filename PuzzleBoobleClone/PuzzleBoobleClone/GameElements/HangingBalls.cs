@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PuzzleBoobleClone.GameElements
 {
-    public class HangingBalls : GameElement
+    public class HangingBalls : GameElement, BoundsObserver
     {
         /// <summary>
         /// Represents a Slot in the Ball Field
@@ -72,17 +72,18 @@ namespace PuzzleBoobleClone.GameElements
         {
             get
             {
-                return new Vector2(Bounds.Left, Bounds.Top);
+                return new Vector2(Bounds.Rectangle.Left, Bounds.Rectangle.Top);
             }
         }
 
         private List<List<Ball>> Balls;
 
-        private Rectangle Bounds;
+        private Bounds Bounds;
 
-        public HangingBalls(Rectangle bounds)
+        public HangingBalls(Bounds bounds)
         {
             Bounds = bounds;
+            bounds.Observer = this;
 
             Balls = new List<List<Ball>>(NUMBER_OF_ROWS);
             for (int i = 0; i < NUMBER_OF_ROWS; i++)
@@ -173,6 +174,11 @@ namespace PuzzleBoobleClone.GameElements
             }
             Balls[rowIndex][colIndex] = ball;
 
+            RefreshBallPosition(rowIndex, colIndex, ball);
+        }
+
+        private void RefreshBallPosition(int rowIndex, int colIndex, Ball ball)
+        {
             if (rowIndex % 2 == 0)
             {
                 ball.Position = Position + new Vector2(colIndex * Ball.RECTANGLE_WIDTH, rowIndex * Ball.RECTANGLE_HEIGHT);
@@ -186,7 +192,7 @@ namespace PuzzleBoobleClone.GameElements
 
         public bool BallIntersectsWithUpperBounds(Ball ball) 
         {
-            return ball.Rectangle.Center.Y < Bounds.Top;
+            return ball.Rectangle.Center.Y < Bounds.Rectangle.Top;
         }
 
         public BallSlot BallsIntersectingWithBall(Ball ball)
@@ -213,13 +219,13 @@ namespace PuzzleBoobleClone.GameElements
             int nearestColumnIndex;
             if (nearestRowIndex % 2 == 0)
             {
-                float nearestColumnRatio = Math.Abs(ball.Rectangle.Center.X - Position.X) / Bounds.Width;
+                float nearestColumnRatio = Math.Abs(ball.Rectangle.Center.X - Position.X) / Bounds.Rectangle.Width;
 
                 nearestColumnIndex = (int)MathHelper.Clamp((float)Math.Floor(nearestColumnRatio * NUMBER_OF_COLUMNS_EVEN), 0, NUMBER_OF_COLUMNS_EVEN-1);
             }
             else
             {
-                float nearestColumnRatio = Math.Abs(ball.Rectangle.Center.X + ODD_ROW_OFFSET - Position.X) / (Bounds.Width - 2*ODD_ROW_OFFSET);
+                float nearestColumnRatio = Math.Abs(ball.Rectangle.Center.X + ODD_ROW_OFFSET - Position.X) / (Bounds.Rectangle.Width - 2*ODD_ROW_OFFSET);
                 nearestColumnIndex = (int)MathHelper.Clamp((float)Math.Floor(nearestColumnRatio * NUMBER_OF_COLUMNS_ODD), 0, NUMBER_OF_COLUMNS_ODD-1);
             }
 
@@ -487,6 +493,23 @@ namespace PuzzleBoobleClone.GameElements
         private static int GetNumberOfColumnForRow(int rowIndex) 
         {
             return rowIndex % 2 == 0 ? NUMBER_OF_COLUMNS_EVEN : NUMBER_OF_COLUMNS_ODD;
+        }
+
+        public void OnOneRowRemoved(Bounds bound)
+        {
+            // Reposition All Rows
+            for (int i = 0; i < NUMBER_OF_ROWS; i++)
+            {
+                List<BallSlot> slotListCandidate = new List<BallSlot>();
+                for (int j = 0; j < GetNumberOfColumnForRow(i); j++)
+                {
+                    Ball ball = GetBallAtSlot(i, j);
+                    if (ball != null) 
+                    {
+                        RefreshBallPosition(i, j, ball);
+                    }
+                }
+            }
         }
     }
 }

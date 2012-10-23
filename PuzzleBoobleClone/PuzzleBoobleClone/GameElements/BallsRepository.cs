@@ -37,7 +37,7 @@ namespace PuzzleBoobleClone.GameElements
             Arrow = arrow;
             FieldBounds = bounds;
 
-            HangingBalls = new HangingBalls(bounds.Rectangle);
+            HangingBalls = new HangingBalls(bounds);
             SetCurrentBall(new Ball(CURRENT_BALL_POSITION, HangingBalls.GetRandomColor()));
             SetNextBall(new Ball(NEXT_BALL_POSITION, HangingBalls.GetRandomColor()));
         }

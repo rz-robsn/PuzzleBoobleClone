@@ -19,6 +19,9 @@ namespace PuzzleBoobleClone.GameElements
         /// </summary>
         public Rectangle Rectangle = new Rectangle(190, 45, 259, 322);
 
+        public BoundsObserver Observer = null;
+
+        private Vector2 InitialPosition = new Vector2(190, 45);
         private int CurrentNumOfRowToRemove;
 
         public Bounds() 
@@ -38,7 +41,7 @@ namespace PuzzleBoobleClone.GameElements
             {
                 spriteBatch.Draw(
                     texture: wall,
-                    position: GetPosition() + new Vector2(0, i * ROW_HEIGHT),
+                    position: InitialPosition + new Vector2(0, i * ROW_HEIGHT),
                     sourceRectangle: null,
                     color: Microsoft.Xna.Framework.Color.White,
                     rotation: 0,
@@ -54,11 +57,19 @@ namespace PuzzleBoobleClone.GameElements
         public void RemoveOneRow() 
         {
             CurrentNumOfRowToRemove = (int)MathHelper.Clamp(CurrentNumOfRowToRemove + 1, 0, NUMBER_OF_ROWS);
+
+            Rectangle = new Rectangle(
+                Rectangle.Left,
+                Rectangle.Top + ROW_HEIGHT,
+                Rectangle.Width,
+                Rectangle.Height - ROW_HEIGHT);
+
+            if (Observer != null) 
+            {
+                Observer.OnOneRowRemoved(this);
+            }
         }
 
-        private Vector2 GetPosition() 
-        {
-            return new Vector2(Rectangle.Left, Rectangle.Top); 
-        }
+        
     }
 }

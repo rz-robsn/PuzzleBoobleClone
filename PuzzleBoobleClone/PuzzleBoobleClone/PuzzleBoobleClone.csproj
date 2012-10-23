@@ -113,6 +113,7 @@
     <Compile Include="GameElements\BallsRepository.cs" />
     <Compile Include="GameElements\Bobbles.cs" />
     <Compile Include="GameElements\Bounds.cs" />
+    <Compile Include="GameElements\BoundsObserver.cs" />
     <Compile Include="GameElements\GameElement.cs" />
     <Compile Include="GameElements\BagAndLauncherMachine.cs" />
     <Compile Include="GameElementsRepository.cs" />
