@@ -10,12 +10,12 @@ namespace PuzzleBoobleClone.GameElements
     public class Ball : GameElement
     {
         private static int SRC_RECTANGLE_WIDTH = 16;
-        private static int SRC_RECTANGLE_HEIGHT = 17;
+        private static int SRC_RECTANGLE_HEIGHT = 16;
 
         /// <summary>
         ///  Coordinate of the Top Left corner of the top Ball (= Blue Ball) on the SpriteSheet
         /// </summary>
-        private static Point SPRITE_BALL_TOP_LEFT = new Point(18, 260);
+        private static Point SPRITE_BALL_TOP_LEFT = new Point(18, 261);
 
         private static int SPRITE_BALL_ROW_HEIGHT = 26;
         private static int SPRITE_BALL_COLUMN_WIDTH = 306;

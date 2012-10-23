@@ -15,6 +15,7 @@ namespace PuzzleBoobleClone
 
         public Texture2D BackGround;
         public Texture2D SpriteSheet;
+        public Texture2D BoundsWall;
 
         public GameElementsRepository()
         {
@@ -26,6 +27,7 @@ namespace PuzzleBoobleClone
             this.Elements.Add(new BagAndLauncherMachine());
             this.Elements.Add(arrow);
             this.Elements.Add(new Bobbles());
+            this.Elements.Add(bounds);
             this.Elements.Add(new BallsRepository(arrow, bounds));
         }
 
@@ -33,6 +35,7 @@ namespace PuzzleBoobleClone
         {
             SpriteSheet = game.Content.Load<Texture2D>("Images/sprites");
             BackGround = game.Content.Load<Texture2D>("Images/background");
+            BoundsWall = game.Content.Load<Texture2D>("Images/bounds");
         }
         
         public void Update(GameTime gameTime, Game1 game)
