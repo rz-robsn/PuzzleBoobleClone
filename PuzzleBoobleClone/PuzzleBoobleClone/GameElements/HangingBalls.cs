@@ -213,20 +213,42 @@ namespace PuzzleBoobleClone.GameElements
 
         public void SetBallToNearestSlot(Ball ball, BallSlot interSectingSlot)
         {
-            float nearestRowRatio = Math.Abs(ball.Rectangle.Center.Y - Position.Y) / (Ball.RECTANGLE_HEIGHT * NUMBER_OF_ROWS);
-            int nearestRowIndex = (int)MathHelper.Clamp( (float)Math.Floor(nearestRowRatio * NUMBER_OF_ROWS), 0, NUMBER_OF_ROWS-1);
-
+            int nearestRowIndex;
             int nearestColumnIndex;
-            if (nearestRowIndex % 2 == 0)
-            {
-                float nearestColumnRatio = Math.Abs(ball.Rectangle.Center.X - Position.X) / Bounds.Rectangle.Width;
 
-                nearestColumnIndex = (int)MathHelper.Clamp((float)Math.Floor(nearestColumnRatio * NUMBER_OF_COLUMNS_EVEN), 0, NUMBER_OF_COLUMNS_EVEN-1);
-            }
-            else
+            if (interSectingSlot != null)
             {
-                float nearestColumnRatio = Math.Abs(ball.Rectangle.Center.X + ODD_ROW_OFFSET - Position.X) / (Bounds.Rectangle.Width - 2*ODD_ROW_OFFSET);
-                nearestColumnIndex = (int)MathHelper.Clamp((float)Math.Floor(nearestColumnRatio * NUMBER_OF_COLUMNS_ODD), 0, NUMBER_OF_COLUMNS_ODD-1);
+                // Get the nearest empty slot.
+                List<BallSlot> emptySlots = GetAllAdjacentSlots(interSectingSlot);
+                emptySlots.RemoveAll(slot => GetBallAtSlot(slot) != null);
+
+                Vector2 ballCenter = new Vector2(ball.Rectangle.Center.X, ball.Rectangle.Center.Y);
+                emptySlots.Sort(delegate(BallSlot slot, BallSlot otherSlot)
+                {
+                    float length1 = (GetSlotCenter(slot) - ballCenter).Length();
+                    float length2 = (GetSlotCenter(otherSlot) - ballCenter).Length();
+                    return length1.CompareTo(length2);
+                });
+
+                nearestRowIndex = emptySlots.ElementAt(0).RowIndex;
+                nearestColumnIndex = emptySlots.ElementAt(0).ColumnIndex;
+            }
+            else 
+            {
+                float nearestRowRatio = Math.Abs(ball.Rectangle.Center.Y - Position.Y) / (Ball.RECTANGLE_HEIGHT * NUMBER_OF_ROWS);
+                nearestRowIndex = (int)MathHelper.Clamp((float)Math.Floor(nearestRowRatio * NUMBER_OF_ROWS), 0, NUMBER_OF_ROWS - 1);
+
+                if (nearestRowIndex % 2 == 0)
+                {
+                    float nearestColumnRatio = Math.Abs(ball.Rectangle.Center.X - Position.X) / Bounds.Rectangle.Width;
+
+                    nearestColumnIndex = (int)MathHelper.Clamp((float)Math.Floor(nearestColumnRatio * NUMBER_OF_COLUMNS_EVEN), 0, NUMBER_OF_COLUMNS_EVEN - 1);
+                }
+                else
+                {
+                    float nearestColumnRatio = Math.Abs(ball.Rectangle.Center.X + ODD_ROW_OFFSET - Position.X) / (Bounds.Rectangle.Width - 2 * ODD_ROW_OFFSET);
+                    nearestColumnIndex = (int)MathHelper.Clamp((float)Math.Floor(nearestColumnRatio * NUMBER_OF_COLUMNS_ODD), 0, NUMBER_OF_COLUMNS_ODD - 1);
+                }            
             }
 
             try
@@ -282,6 +304,23 @@ namespace PuzzleBoobleClone.GameElements
                     return Ball.BallColor.Yellow;
                 default:
                     return Ball.BallColor.Blue;
+            }
+        }
+
+        public void OnOneRowRemoved(Bounds bound)
+        {
+            // Reposition All Rows
+            for (int i = 0; i < NUMBER_OF_ROWS; i++)
+            {
+                List<BallSlot> slotListCandidate = new List<BallSlot>();
+                for (int j = 0; j < GetNumberOfColumnForRow(i); j++)
+                {
+                    Ball ball = GetBallAtSlot(i, j);
+                    if (ball != null)
+                    {
+                        RefreshBallPosition(i, j, ball);
+                    }
+                }
             }
         }
 
@@ -427,6 +466,13 @@ namespace PuzzleBoobleClone.GameElements
             return slots.ConvertAll<Ball>(slot => GetBallAtSlot(slot));
         }
 
+        private Vector2 GetSlotCenter(BallSlot slot) 
+        {
+            return (slot.RowIndex % 2 == 0) ? Position + new Vector2(slot.ColumnIndex * Ball.RECTANGLE_WIDTH + Ball.RECTANGLE_WIDTH / 2, slot.RowIndex * Ball.RECTANGLE_HEIGHT + Ball.RECTANGLE_HEIGHT / 2)
+                                            : Position + new Vector2(ODD_ROW_OFFSET + slot.ColumnIndex * Ball.RECTANGLE_WIDTH + Ball.RECTANGLE_WIDTH / 2, slot.RowIndex * Ball.RECTANGLE_HEIGHT + Ball.RECTANGLE_HEIGHT / 2);
+            
+        }
+
         private static List<BallSlot> GetAllAdjacentLowerSlots(BallSlot slot)
         {
             List<BallSlot> slots = new List<BallSlot>(6);
@@ -493,23 +539,6 @@ namespace PuzzleBoobleClone.GameElements
         private static int GetNumberOfColumnForRow(int rowIndex) 
         {
             return rowIndex % 2 == 0 ? NUMBER_OF_COLUMNS_EVEN : NUMBER_OF_COLUMNS_ODD;
-        }
-
-        public void OnOneRowRemoved(Bounds bound)
-        {
-            // Reposition All Rows
-            for (int i = 0; i < NUMBER_OF_ROWS; i++)
-            {
-                List<BallSlot> slotListCandidate = new List<BallSlot>();
-                for (int j = 0; j < GetNumberOfColumnForRow(i); j++)
-                {
-                    Ball ball = GetBallAtSlot(i, j);
-                    if (ball != null) 
-                    {
-                        RefreshBallPosition(i, j, ball);
-                    }
-                }
-            }
         }
     }
 }
