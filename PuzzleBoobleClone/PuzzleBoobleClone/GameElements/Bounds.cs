@@ -44,6 +44,10 @@ namespace PuzzleBoobleClone.GameElements
 
         public void Update(GameTime gameTime, Game1 game)
         {
+            if (CurrentNumOfRowRemoved == NUMBER_OF_ROWS) 
+            {
+                RowRemovalTimer.Stop();
+            }
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Game1 game)

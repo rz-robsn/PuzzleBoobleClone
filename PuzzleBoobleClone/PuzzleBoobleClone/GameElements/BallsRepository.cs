@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Timers;
 
 namespace PuzzleBoobleClone.GameElements
 {
@@ -32,6 +33,8 @@ namespace PuzzleBoobleClone.GameElements
 
         private KeyboardState PreviousKeyState;
 
+        private Timer ThrowBallTimer;
+
         public BallsRepository(AimingArrow arrow, Bounds bounds, HangingBalls hangingBalls) 
         {
             Arrow = arrow;
@@ -40,6 +43,11 @@ namespace PuzzleBoobleClone.GameElements
             HangingBalls = hangingBalls;
             SetCurrentBall(new Ball(CURRENT_BALL_POSITION, HangingBalls.GetRandomColor()));
             SetNextBall(new Ball(NEXT_BALL_POSITION, HangingBalls.GetRandomColor()));
+
+            ThrowBallTimer = new Timer();
+            ThrowBallTimer.AutoReset = false;
+            ThrowBallTimer.Interval = 10000;
+            ResetTimer();
         }
 
         public void Update(GameTime gameTime, Game1 game)
@@ -81,6 +89,8 @@ namespace PuzzleBoobleClone.GameElements
         {
             CurrentBall.Direction = Arrow.GetDirectionVector();
             CurrentBall.Speed = MOVING_BALL_SPEED;
+            ThrowBallTimer.Stop();
+            ResetTimer();
         }
 
         private void SetCurrentBall(Ball ball) 
@@ -106,6 +116,15 @@ namespace PuzzleBoobleClone.GameElements
         private bool BallRectangleCollidesWithBottomBound(Ball ball)
         {
             return ball.Rectangle.Top < FieldBounds.Rectangle.Bottom && FieldBounds.Rectangle.Bottom < ball.Rectangle.Bottom;
+        }
+
+        private void ResetTimer() 
+        {
+            ThrowBallTimer.Elapsed += new ElapsedEventHandler(delegate(object source, ElapsedEventArgs e)
+            {
+                ThrowCurrentBall();
+            });
+            ThrowBallTimer.Start();        
         }
     }
 }
