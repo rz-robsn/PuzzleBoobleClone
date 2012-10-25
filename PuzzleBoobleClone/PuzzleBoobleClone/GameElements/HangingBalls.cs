@@ -296,29 +296,18 @@ namespace PuzzleBoobleClone.GameElements
 
         public Ball.BallColor GetRandomColor() 
         {
-            Random random = new Random();
-            int randomNumber = random.Next(0, 8);
+            // Pick One color out of those in the grid.
+            IEnumerable<Ball> BallPool = Balls.SelectMany(list => list).Where(ball => ball != null);
 
-            switch(randomNumber)
+            if (BallPool.Count() > 0)
             {
-                case 0:
-                    return Ball.BallColor.Blue;
-                case 1:
-                    return Ball.BallColor.DarkGrey;
-                case 2:
-                    return Ball.BallColor.Green;
-                case 3:
-                    return Ball.BallColor.Orange;
-                case 4:
-                    return Ball.BallColor.Purple;
-                case 5:
-                    return Ball.BallColor.Red;
-                case 6:
-                    return Ball.BallColor.Silver;
-                case 7:
-                    return Ball.BallColor.Yellow;
-                default:
-                    return Ball.BallColor.Blue;
+                Random random = new Random();
+                int randomNumber = random.Next(0, BallPool.Count());
+                return BallPool.ElementAt(randomNumber).Color;
+            }
+            else 
+            {
+                return Ball.BallColor.Blue;
             }
         }
 
