@@ -79,11 +79,14 @@ namespace PuzzleBoobleClone.GameElements
         private List<List<Ball>> Balls;
 
         private Bounds Bounds;
+        private HangingBallsObserver Observer;
 
-        public HangingBalls(Bounds bounds)
+        public HangingBalls(Bounds bounds, HangingBallsObserver observer)
         {
             Bounds = bounds;
             bounds.Observer = this;
+
+            Observer = observer;
 
             Balls = new List<List<Ball>>(NUMBER_OF_ROWS);
             for (int i = 0; i < NUMBER_OF_ROWS; i++)
@@ -219,7 +222,8 @@ namespace PuzzleBoobleClone.GameElements
             if (interSectingSlot != null)
             {
                 // Get the nearest empty slot.
-                List<BallSlot> emptySlots = GetAllAdjacentSlots(interSectingSlot);
+                List<BallSlot> emptySlots = GetAllAdjacentLowerSlots(interSectingSlot);
+                emptySlots.AddRange(GetAdjacentSlotsOnSameRow(interSectingSlot));
                 emptySlots.RemoveAll(slot => GetBallAtSlot(slot) != null);
 
                 Vector2 ballCenter = new Vector2(ball.Rectangle.Center.X, ball.Rectangle.Center.Y);
@@ -230,10 +234,20 @@ namespace PuzzleBoobleClone.GameElements
                     return length1.CompareTo(length2);
                 });
 
-                nearestRowIndex = emptySlots.ElementAt(0).RowIndex;
-                nearestColumnIndex = emptySlots.ElementAt(0).ColumnIndex;
+                if (emptySlots.Count > 0)
+                {
+                    nearestRowIndex = emptySlots.ElementAt(0).RowIndex;
+                    nearestColumnIndex = emptySlots.ElementAt(0).ColumnIndex;
+                }
+                else 
+                {
+                    // There is no room left to place that ball.
+                    Observer.OnPlayerLoses();
+                    nearestColumnIndex = interSectingSlot.ColumnIndex;
+                    nearestRowIndex = interSectingSlot.RowIndex;
+                }
             }
-            else 
+            else // The ball reached the ceiling
             {
                 float nearestRowRatio = Math.Abs(ball.Rectangle.Center.Y - Position.Y) / (Ball.RECTANGLE_HEIGHT * NUMBER_OF_ROWS);
                 nearestRowIndex = (int)MathHelper.Clamp((float)Math.Floor(nearestRowRatio * NUMBER_OF_ROWS), 0, NUMBER_OF_ROWS - 1);
@@ -269,6 +283,7 @@ namespace PuzzleBoobleClone.GameElements
                 SetBallAtPosition(nearestRowIndex, nearestColumnIndex, ball);
                 DestroyAlignedPieceAtSlot(nearestRowIndex, nearestColumnIndex);
                 FallDownAllBallsWithNoUpperAdjacentBalls();
+                CheckIfPlayerWins();
             }
             catch (SlotOccupiedException ex) 
             {
@@ -322,6 +337,8 @@ namespace PuzzleBoobleClone.GameElements
                     }
                 }
             }
+
+            CheckIfPlayerLost();
         }
 
         private void DestroyAlignedPieceAtSlot(int rowIndex, int columnIndex)
@@ -473,6 +490,34 @@ namespace PuzzleBoobleClone.GameElements
             
         }
 
+        private void CheckIfPlayerWins()
+        {
+            if (Balls.All(list => list.All(ball => ball == null)))
+            {
+                Observer.OnPlayerWins();
+            }
+        }
+
+        private void CheckIfPlayerLost()
+        {
+            if (GetLowestOccupiedRowIndex() > NUMBER_OF_ROWS - Bounds.CurrentNumOfRowRemoved) 
+            {
+                Observer.OnPlayerLoses();
+            }
+        }
+
+        private int GetLowestOccupiedRowIndex() 
+        {
+            for (int i = NUMBER_OF_ROWS-1; i >= 0; i--)
+            {
+                if (Balls[i].Any(ball => ball != null))
+                {
+                    return i;
+                }
+            }
+            return 0;
+        }
+
         private static List<BallSlot> GetAllAdjacentLowerSlots(BallSlot slot)
         {
             List<BallSlot> slots = new List<BallSlot>(6);
@@ -538,7 +583,7 @@ namespace PuzzleBoobleClone.GameElements
 
         private static int GetNumberOfColumnForRow(int rowIndex) 
         {
-            return rowIndex % 2 == 0 ? NUMBER_OF_COLUMNS_EVEN : NUMBER_OF_COLUMNS_ODD;
+            return GetClampedRowIndex(rowIndex) % 2 == 0 ? NUMBER_OF_COLUMNS_EVEN : NUMBER_OF_COLUMNS_ODD;
         }
     }
 }

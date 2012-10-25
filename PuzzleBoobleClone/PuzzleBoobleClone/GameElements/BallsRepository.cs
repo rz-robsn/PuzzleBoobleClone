@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace PuzzleBoobleClone.GameElements
 {
-    public class BallsRepository : GameElement
+    public class BallsRepository : GameElement, HangingBallsObserver
     {
         private static readonly Vector2 CURRENT_BALL_POSITION = new Vector2(303, 365);
         private static readonly Vector2 NEXT_BALL_POSITION = new Vector2(232, 400);
@@ -37,7 +37,7 @@ namespace PuzzleBoobleClone.GameElements
             Arrow = arrow;
             FieldBounds = bounds;
 
-            HangingBalls = new HangingBalls(bounds);
+            HangingBalls = new HangingBalls(bounds, this);
             SetCurrentBall(new Ball(CURRENT_BALL_POSITION, HangingBalls.GetRandomColor()));
             SetNextBall(new Ball(NEXT_BALL_POSITION, HangingBalls.GetRandomColor()));
         }
@@ -106,6 +106,16 @@ namespace PuzzleBoobleClone.GameElements
         private bool BallRectangleCollidesWithBottomBound(Ball ball)
         {
             return ball.Rectangle.Top < FieldBounds.Rectangle.Bottom && FieldBounds.Rectangle.Bottom < ball.Rectangle.Bottom;
+        }
+
+        public void OnPlayerWins()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnPlayerLoses()
+        {
+            throw new NotImplementedException();
         }
     }
 }

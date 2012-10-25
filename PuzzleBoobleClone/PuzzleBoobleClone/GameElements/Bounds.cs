@@ -22,11 +22,11 @@ namespace PuzzleBoobleClone.GameElements
         public BoundsObserver Observer = null;
 
         private Vector2 InitialPosition = new Vector2(190, 45);
-        private int CurrentNumOfRowToRemove;
+        public int CurrentNumOfRowRemoved;
 
         public Bounds() 
         {
-            CurrentNumOfRowToRemove = 0;
+            CurrentNumOfRowRemoved = 0;
         }
 
         public void Update(GameTime gameTime, Game1 game)
@@ -37,7 +37,7 @@ namespace PuzzleBoobleClone.GameElements
         {
             Texture2D wall = game.GameElements.BoundsWall;
 
-            for (int i = 0; i < CurrentNumOfRowToRemove; i++ )
+            for (int i = 0; i < CurrentNumOfRowRemoved; i++ )
             {
                 spriteBatch.Draw(
                     texture: wall,
@@ -56,7 +56,7 @@ namespace PuzzleBoobleClone.GameElements
 
         public void RemoveOneRow() 
         {
-            CurrentNumOfRowToRemove = (int)MathHelper.Clamp(CurrentNumOfRowToRemove + 1, 0, NUMBER_OF_ROWS);
+            CurrentNumOfRowRemoved = (int)MathHelper.Clamp(CurrentNumOfRowRemoved + 1, 0, NUMBER_OF_ROWS);
 
             Rectangle = new Rectangle(
                 Rectangle.Left,
