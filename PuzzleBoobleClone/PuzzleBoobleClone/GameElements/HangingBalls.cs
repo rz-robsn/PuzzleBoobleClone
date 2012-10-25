@@ -489,9 +489,9 @@ namespace PuzzleBoobleClone.GameElements
 
         private void CheckIfPlayerLost()
         {
-            if (GetLowestOccupiedRowIndex() > NUMBER_OF_ROWS - Bounds.CurrentNumOfRowRemoved) 
+            if (GetLowestOccupiedRowIndex() + 1 > NUMBER_OF_ROWS - Bounds.CurrentNumOfRowRemoved) 
             {
-                Observer.OnPlayerLoses();
+                 Observer.OnPlayerLoses();
             }
         }
 

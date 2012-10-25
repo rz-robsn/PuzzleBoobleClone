@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Timers;
 
 namespace PuzzleBoobleClone.GameElements
 {
@@ -24,9 +25,21 @@ namespace PuzzleBoobleClone.GameElements
         private Vector2 InitialPosition = new Vector2(190, 45);
         public int CurrentNumOfRowRemoved;
 
+        private Timer RowRemovalTimer;
+
         public Bounds() 
         {
             CurrentNumOfRowRemoved = 0;
+
+            RowRemovalTimer = new Timer();
+            RowRemovalTimer.AutoReset = true;
+            RowRemovalTimer.Interval = 15000;
+            RowRemovalTimer.Elapsed += new ElapsedEventHandler(
+                delegate(object source, ElapsedEventArgs e) 
+                {
+                    RemoveOneRow();    
+                });
+            RowRemovalTimer.Start();
         }
 
         public void Update(GameTime gameTime, Game1 game)

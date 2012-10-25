@@ -8,7 +8,7 @@ using PuzzleBoobleClone.GameElements;
 
 namespace PuzzleBoobleClone
 {   
-    public class GameElementsRepository : GameElement
+    public class GameElementsRepository : GameElement, HangingBallsObserver
     {
 
         private List<GameElement> Elements;
@@ -21,6 +21,7 @@ namespace PuzzleBoobleClone
         {
             AimingArrow arrow = new AimingArrow();
             Bounds bounds = new Bounds();
+            HangingBalls hangingBalls = new HangingBalls(bounds, this);
 
             this.Elements = new List<GameElement>();
             this.Elements.Add(new BackGround());
@@ -28,7 +29,7 @@ namespace PuzzleBoobleClone
             this.Elements.Add(arrow);
             this.Elements.Add(new Bobbles());
             this.Elements.Add(bounds);
-            this.Elements.Add(new BallsRepository(arrow, bounds));
+            this.Elements.Add(new BallsRepository(arrow, bounds, hangingBalls));
         }
 
         public void LoadContent(Game1 game)
@@ -51,6 +52,16 @@ namespace PuzzleBoobleClone
         public void PlayerLost() 
         {
         
+        }
+
+        public void OnPlayerWins()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnPlayerLoses()
+        {
+            throw new NotImplementedException();
         }
     }
 }
