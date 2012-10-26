@@ -110,6 +110,7 @@
     <Compile Include="GameElements\AimingArrow.cs" />
     <Compile Include="GameElements\BackGround.cs" />
     <Compile Include="GameElements\Ball.cs" />
+    <Compile Include="GameElements\BallAnimationHelper.cs" />
     <Compile Include="GameElements\BallsRepository.cs" />
     <Compile Include="GameElements\Bobbles.cs" />
     <Compile Include="GameElements\Bounds.cs" />
@@ -119,7 +120,6 @@
     <Compile Include="GameElementsRepository.cs" />
     <Compile Include="GameElements\HangingBalls.cs" />
     <Compile Include="GameElements\HangingBallsObserver.cs" />
-    <Compile Include="GameElements\PoppedBall.cs" />
     <Compile Include="GameElements\Score.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

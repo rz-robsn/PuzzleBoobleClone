@@ -12,14 +12,6 @@ namespace PuzzleBoobleClone.GameElements
         private static int SRC_RECTANGLE_WIDTH = 16;
         private static int SRC_RECTANGLE_HEIGHT = 16;
 
-        /// <summary>
-        ///  Coordinate of the Top Left corner of the top Ball (= Blue Ball) on the SpriteSheet
-        /// </summary>
-        private static Point SPRITE_BALL_TOP_LEFT = new Point(18, 261);
-
-        private static int SPRITE_BALL_ROW_HEIGHT = 26;
-        private static int SPRITE_BALL_COLUMN_WIDTH = 306;
-
         public static int RECTANGLE_WIDTH = 2 * SRC_RECTANGLE_WIDTH;
         public static int RECTANGLE_HEIGHT = 2 * SRC_RECTANGLE_HEIGHT-5;
 
@@ -31,14 +23,14 @@ namespace PuzzleBoobleClone.GameElements
         public float Speed;
         public Rectangle Rectangle;
 
-        private Rectangle SourceRectangle;
+        private BallAnimationHelper AnimationHelper;
 
         public Ball(Vector2 position, BallColor color)
         {
             Position = position;
             Color = color;
 
-            SourceRectangle = GetColorRectangle(color);
+            AnimationHelper = new BallAnimationHelper(this);
 
             Direction = new Vector2(0, 0);
             Speed = 0;
@@ -48,21 +40,13 @@ namespace PuzzleBoobleClone.GameElements
         {
             Position += Speed * Direction;
             Rectangle = new Rectangle((int)Position.X, (int)Position.Y, RECTANGLE_WIDTH, RECTANGLE_HEIGHT);
+
+            AnimationHelper.Update(gameTime, game);
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Game1 game)
         {
-            spriteBatch.Draw(
-                texture: game.GameElements.SpriteSheet,
-                position: Position,
-                sourceRectangle: SourceRectangle,
-                color: Microsoft.Xna.Framework.Color.White,
-                rotation: 0,
-                origin: Vector2.Zero,
-                scale: 2.0f,
-                effects: SpriteEffects.None,
-                layerDepth: 0.6f
-            );
+            AnimationHelper.Draw(gameTime, spriteBatch, game);
         }
 
         public bool IsMoving() 
@@ -70,61 +54,19 @@ namespace PuzzleBoobleClone.GameElements
             return Speed > 0;
         }
 
-        public void Destroy() { }
-
-        public void FallDown() { }
-
-        private static Rectangle GetColorRectangle(BallColor color)
+        public void Destroy() 
         {
-            int top = 0;
-            int left = 0;
+            AnimationHelper.Destroy();
+        }
 
-            switch (color)
-            {
-                case BallColor.Blue:
-                    top = 0;
-                    left = 0;
-                    break;
+        public void FallDown() 
+        {
+            AnimationHelper.FallDown();
+        }
 
-                case BallColor.DarkGrey:
-                    top = 1;
-                    left = 1;
-                    break;
-
-                case BallColor.Green:
-                    top = 0;
-                    left = 1;
-                    break;
-
-                case BallColor.Orange:
-                    top = 2;
-                    left = 1;
-                    break;
-
-                case BallColor.Purple:
-                    top = 3;
-                    left = 1;
-                    break;
-
-                case BallColor.Red:
-                    left = 0;
-                    top = 2;
-                    break;
-
-                case BallColor.Silver:
-                    top = 1;
-                    left = 0;
-                    break;
-
-                case BallColor.Yellow:
-                    top = 3;
-                    left = 0;
-                    break;
-
-                default:
-                    throw new Exception(String.Format("color {0} does not exist", color));
-            }
-            return new Rectangle(SPRITE_BALL_TOP_LEFT.X + left*SPRITE_BALL_COLUMN_WIDTH, SPRITE_BALL_TOP_LEFT.Y + top*SPRITE_BALL_ROW_HEIGHT, SRC_RECTANGLE_WIDTH, SRC_RECTANGLE_HEIGHT);
+        public void Load() 
+        {
+            AnimationHelper.Load();
         }
     }
 }

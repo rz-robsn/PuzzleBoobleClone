@@ -15,6 +15,7 @@ namespace PuzzleBoobleClone
 
         public Texture2D BackGround;
         public Texture2D SpriteSheet;
+        public Texture2D PoppedBallsSpriteSheet;
         public Texture2D BoundsWall;
 
         public SpriteFont Font;
@@ -41,6 +42,7 @@ namespace PuzzleBoobleClone
             SpriteSheet = game.Content.Load<Texture2D>("Images/sprites");
             BackGround = game.Content.Load<Texture2D>("Images/background");
             BoundsWall = game.Content.Load<Texture2D>("Images/bounds");
+            PoppedBallsSpriteSheet = game.Content.Load<Texture2D>("Images/sprites_poppedballsonly");
             Font = game.Content.Load<SpriteFont>("Linds");
         }
         
