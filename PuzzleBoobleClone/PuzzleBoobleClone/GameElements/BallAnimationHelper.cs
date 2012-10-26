@@ -33,6 +33,8 @@ namespace PuzzleBoobleClone.GameElements
         private static int SPRITE_DISTANCE_DESTROYED_BALL_ROW_HEIGHT = 45;
         private static int SPRITE_DISTANCE_DESTROYED_BALL_COLUMN_WIDTH = 200;
 
+        private static int FALLING_SPEED = 10;
+
         public enum BallState {Normal, Loading, Destroyed, Falling}
 
         private Rectangle SourceRectangle;
@@ -57,6 +59,7 @@ namespace PuzzleBoobleClone.GameElements
 
         public void FallDown() 
         {
+            State = BallState.Falling;
         }
 
         public void Load() { }
@@ -65,6 +68,10 @@ namespace PuzzleBoobleClone.GameElements
         {
             switch (State) 
             {
+                case BallState.Falling:
+                    Ball.Position.Y += FALLING_SPEED;
+                    break;
+
                 case BallState.Destroyed:
                     if (DestroyedGamedTime == 0) 
                     {
@@ -103,6 +110,7 @@ namespace PuzzleBoobleClone.GameElements
         {
             switch (State) 
             {
+                case BallState.Falling:
                 case BallState.Normal:
                     spriteBatch.Draw(
                         texture: game.GameElements.SpriteSheet,
