@@ -63,7 +63,7 @@ namespace PuzzleBoobleClone.GameElements
         private static int NUMBER_OF_ROWS = 12;
         private static int NUMBER_OF_COLUMNS_EVEN = 8;
         private static int NUMBER_OF_COLUMNS_ODD = 7;
-        private static int ODD_ROW_OFFSET = 16;
+        private static int ODD_ROW_OFFSET = 16; 
 
         /// <summary>
         /// Top Left Position of the Top Left Slot
@@ -80,11 +80,13 @@ namespace PuzzleBoobleClone.GameElements
 
         private Bounds Bounds;
         private HangingBallsObserver Observer;
+        private Score CurrentScore;
 
-        public HangingBalls(Bounds bounds, HangingBallsObserver observer)
+        public HangingBalls(Bounds bounds, HangingBallsObserver observer, Score score)
         {
             Bounds = bounds;
             bounds.Observer = this;
+            CurrentScore = score;
 
             Observer = observer;
 
@@ -282,7 +284,7 @@ namespace PuzzleBoobleClone.GameElements
                  
                 SetBallAtPosition(nearestRowIndex, nearestColumnIndex, ball);
                 DestroyAlignedPieceAtSlot(nearestRowIndex, nearestColumnIndex);
-                FallDownAllBallsWithNoUpperAdjacentBalls();
+                CurrentScore.Value += (int)Math.Pow(2, FallDownAllBallsWithNoUpperAdjacentBalls())*10;
                 CheckIfPlayerWins();
             }
             catch (SlotOccupiedException ex) 
@@ -330,6 +332,12 @@ namespace PuzzleBoobleClone.GameElements
             CheckIfPlayerLost();
         }
 
+        /// <summary>
+        /// "Pops" the ball as well as any other ball of the same color next to it 
+        /// if there are 3 or more of these balls, and updates the score.
+        /// </summary>
+        /// <param name="rowIndex">The RowIndex of the ball to pop.</param>
+        /// <param name="columnIndex">The ColumnIndex of the ball to pop.</param>
         private void DestroyAlignedPieceAtSlot(int rowIndex, int columnIndex)
         {
             List<BallSlot> alignedSlots = GetAllPieceOfSameColorAlignedAtSlot(rowIndex, columnIndex);
@@ -337,6 +345,7 @@ namespace PuzzleBoobleClone.GameElements
             if (alignedSlots.Count >= 3) 
             {
                 alignedSlots.ForEach(slot => DestroyBallAtSlot(slot));
+                CurrentScore.Value += CurrentScore.Value * Score.POINTS_PER_BALLS_POPPED;
             }
         }
 
@@ -358,14 +367,19 @@ namespace PuzzleBoobleClone.GameElements
             }
         }
 
-        private void FallDownAllBallsWithNoUpperAdjacentBalls() 
+        /// <summary>
+        /// Falls all balls that have no Upper adjacent Balls.
+        /// </summary>
+        /// <returns>The Number of balls that fell.</returns>
+        private int FallDownAllBallsWithNoUpperAdjacentBalls() 
         {
             List<BallSlot> slots = GetAllBallsWithNoUpperAndSameRowAdjacentBalls();
             if(slots.Count > 0)
             {
                 slots.ForEach(slot => FallBallAtSlot(slot));
-                FallDownAllBallsWithNoUpperAdjacentBalls();
-            }    
+                return slots.Count + FallDownAllBallsWithNoUpperAdjacentBalls();
+            }
+            return 0;
         }
 
         private void DestroyBallAtSlot(BallSlot slot) 

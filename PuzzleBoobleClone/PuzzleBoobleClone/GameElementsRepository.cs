@@ -17,18 +17,22 @@ namespace PuzzleBoobleClone
         public Texture2D SpriteSheet;
         public Texture2D BoundsWall;
 
+        //public SpriteFont Font;
+
         public GameElementsRepository()
         {
             AimingArrow arrow = new AimingArrow();
             Bounds bounds = new Bounds();
-            HangingBalls hangingBalls = new HangingBalls(bounds, this);
+            Score score = new Score();
+            HangingBalls hangingBalls = new HangingBalls(bounds, this, score);
 
             this.Elements = new List<GameElement>();
             this.Elements.Add(new BackGround());
             this.Elements.Add(new BagAndLauncherMachine());
+            this.Elements.Add(new Bobbles()); 
             this.Elements.Add(arrow);
-            this.Elements.Add(new Bobbles());
             this.Elements.Add(bounds);
+            this.Elements.Add(score);
             this.Elements.Add(new BallsRepository(arrow, bounds, hangingBalls));
         }
 
@@ -37,6 +41,7 @@ namespace PuzzleBoobleClone
             SpriteSheet = game.Content.Load<Texture2D>("Images/sprites");
             BackGround = game.Content.Load<Texture2D>("Images/background");
             BoundsWall = game.Content.Load<Texture2D>("Images/bounds");
+            
         }
         
         public void Update(GameTime gameTime, Game1 game)

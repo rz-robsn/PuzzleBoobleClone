@@ -119,6 +119,8 @@
     <Compile Include="GameElementsRepository.cs" />
     <Compile Include="GameElements\HangingBalls.cs" />
     <Compile Include="GameElements\HangingBallsObserver.cs" />
+    <Compile Include="GameElements\PoppedBall.cs" />
+    <Compile Include="GameElements\Score.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
