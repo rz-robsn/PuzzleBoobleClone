@@ -17,7 +17,7 @@ namespace PuzzleBoobleClone
         public Texture2D SpriteSheet;
         public Texture2D BoundsWall;
 
-        //public SpriteFont Font;
+        public SpriteFont Font;
 
         public GameElementsRepository()
         {
@@ -41,7 +41,7 @@ namespace PuzzleBoobleClone
             SpriteSheet = game.Content.Load<Texture2D>("Images/sprites");
             BackGround = game.Content.Load<Texture2D>("Images/background");
             BoundsWall = game.Content.Load<Texture2D>("Images/bounds");
-            
+            Font = game.Content.Load<SpriteFont>("Linds");
         }
         
         public void Update(GameTime gameTime, Game1 game)

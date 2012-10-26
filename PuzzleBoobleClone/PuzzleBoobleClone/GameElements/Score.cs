@@ -13,7 +13,7 @@ namespace PuzzleBoobleClone.GameElements
         public static int POINTS_PER_BALLS_HANGED = 20;
 
         private static Rectangle SRC_RECTANGLE = new Rectangle(336, 1599, 13, 11);
-        private static Vector2 POSITION = new Vector2(0,0);
+        private static Vector2 POSITION = new Vector2(50, 15);
 
         public int Value;
 
@@ -34,7 +34,9 @@ namespace PuzzleBoobleClone.GameElements
                scale: 2.0f,
                effects: SpriteEffects.None,
                layerDepth: 0.6f
-            );   
+            );
+
+            spriteBatch.DrawString(game.GameElements.Font, String.Format("{0:D8}", Value), POSITION + new Vector2(2, 16), Color.WhiteSmoke);
         }
     }
 }

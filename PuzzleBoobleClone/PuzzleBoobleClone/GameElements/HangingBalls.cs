@@ -284,7 +284,11 @@ namespace PuzzleBoobleClone.GameElements
                  
                 SetBallAtPosition(nearestRowIndex, nearestColumnIndex, ball);
                 DestroyAlignedPieceAtSlot(nearestRowIndex, nearestColumnIndex);
-                CurrentScore.Value += (int)Math.Pow(2, FallDownAllBallsWithNoUpperAdjacentBalls())*10;
+
+                int numOfBallsFallen = FallDownAllBallsWithNoUpperAdjacentBalls();
+
+                CurrentScore.Value += (numOfBallsFallen > 0) ? (int)Math.Pow(2, FallDownAllBallsWithNoUpperAdjacentBalls()) * 10
+                                                             : 0;  
                 CheckIfPlayerWins();
             }
             catch (SlotOccupiedException ex) 
@@ -345,7 +349,7 @@ namespace PuzzleBoobleClone.GameElements
             if (alignedSlots.Count >= 3) 
             {
                 alignedSlots.ForEach(slot => DestroyBallAtSlot(slot));
-                CurrentScore.Value += CurrentScore.Value * Score.POINTS_PER_BALLS_POPPED;
+                CurrentScore.Value += alignedSlots.Count * Score.POINTS_PER_BALLS_POPPED;
             }
         }
 
