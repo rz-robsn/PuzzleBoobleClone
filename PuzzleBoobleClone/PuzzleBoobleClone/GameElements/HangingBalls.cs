@@ -77,6 +77,7 @@ namespace PuzzleBoobleClone.GameElements
         }
 
         private List<List<Ball>> Balls;
+        private List<Ball> DeletedBalls;
 
         private Bounds Bounds;
         private HangingBallsObserver Observer;
@@ -109,6 +110,8 @@ namespace PuzzleBoobleClone.GameElements
                     }
                 }
             }
+
+            DeletedBalls = new List<Ball>();
 
             // Adding Balls
             SetBallAtPosition(0, 0, new Ball(Vector2.Zero, Ball.BallColor.Red));
@@ -155,6 +158,8 @@ namespace PuzzleBoobleClone.GameElements
                     }
                 }
             }
+
+            DeletedBalls.ForEach(ball => ball.Update(gameTime, game));
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Game1 game)
@@ -169,6 +174,7 @@ namespace PuzzleBoobleClone.GameElements
                     }
                 }
             }
+            DeletedBalls.ForEach(ball => ball.Draw(gameTime, spriteBatch, game));
         }
 
         public void SetBallAtPosition(int rowIndex, int colIndex, Ball ball)
@@ -392,6 +398,7 @@ namespace PuzzleBoobleClone.GameElements
             if (ball != null)
             {
                 ball.Destroy();
+                DeletedBalls.Add(ball);
             }
             Balls[slot.RowIndex][slot.ColumnIndex] = null;
         }
@@ -402,6 +409,7 @@ namespace PuzzleBoobleClone.GameElements
             if (ball != null) 
             {
                 ball.FallDown();
+                DeletedBalls.Add(ball);
             }
             Balls[slot.RowIndex][slot.ColumnIndex] = null;
         }
