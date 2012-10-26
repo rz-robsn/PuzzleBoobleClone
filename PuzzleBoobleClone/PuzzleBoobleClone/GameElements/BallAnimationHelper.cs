@@ -101,19 +101,42 @@ namespace PuzzleBoobleClone.GameElements
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Game1 game)
         {
-            Texture2D spriteSheet = (this.State == BallState.Destroyed) ? game.GameElements.PoppedBallsSpriteSheet
-                                                                        : game.GameElements.SpriteSheet;
-            spriteBatch.Draw(
-                texture: spriteSheet,
-                position: Ball.Position,
-                sourceRectangle: SourceRectangle,
-                color: Microsoft.Xna.Framework.Color.White,
-                rotation: 0,
-                origin: Vector2.Zero,
-                scale: 2.0f,
-                effects: SpriteEffects.None,
-                layerDepth: 0.6f
-            );
+            switch (State) 
+            {
+                case BallState.Normal:
+                    spriteBatch.Draw(
+                        texture: game.GameElements.SpriteSheet,
+                        position: Ball.Position,
+                        sourceRectangle: SourceRectangle,
+                        color: Microsoft.Xna.Framework.Color.White,
+                        rotation: 0,
+                        origin: Vector2.Zero,
+                        scale: 2.0f,
+                        effects: SpriteEffects.None,
+                        layerDepth: 0.6f
+                    );
+                    break;
+
+                case BallState.Destroyed:
+                    spriteBatch.Draw(
+                        texture: game.GameElements.PoppedBallsSpriteSheet,
+                        position: GetPositionWithCenterOnBallPosition(SourceRectangle),
+                        sourceRectangle: SourceRectangle,
+                        color: Microsoft.Xna.Framework.Color.White,
+                        rotation: 0,
+                        origin: Vector2.Zero,
+                        scale: 2.0f,
+                        effects: SpriteEffects.None,
+                        layerDepth: 0.6f
+                    );
+                    break;
+            }
+        }
+
+        private Vector2 GetPositionWithCenterOnBallPosition(Rectangle rectangle) 
+        {
+            Point BallCenter = Ball.Rectangle.Center;
+            return new Vector2(BallCenter.X - rectangle.Width / 2 -15, BallCenter.Y - rectangle.Height / 2 - 10);
         }
 
         private static Rectangle GetColorNormalRectangle(Ball.BallColor color)
