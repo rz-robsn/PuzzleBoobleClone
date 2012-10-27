@@ -152,6 +152,15 @@ namespace PuzzleBoobleClone.GameElements
                     break;
 
                 case GameElementsRepository.Level.LEVELTWO:
+                    SetBallAtPosition(0, 3, new Ball(Vector2.Zero, Ball.BallColor.DarkGrey));
+                    SetBallAtPosition(0, 4, new Ball(Vector2.Zero, Ball.BallColor.DarkGrey));
+                    SetBallAtPosition(1, 3, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+                    SetBallAtPosition(2, 4, new Ball(Vector2.Zero, Ball.BallColor.Green));
+                    SetBallAtPosition(3, 3, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+                    SetBallAtPosition(4, 4, new Ball(Vector2.Zero, Ball.BallColor.Purple));
+                    SetBallAtPosition(5, 3, new Ball(Vector2.Zero, Ball.BallColor.Green));
+                    SetBallAtPosition(6, 4, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+                    SetBallAtPosition(7, 3, new Ball(Vector2.Zero, Ball.BallColor.Silver));
                     break;
             }  
         }
