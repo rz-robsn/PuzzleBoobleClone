@@ -53,7 +53,8 @@ namespace PuzzleBoobleClone.GameElements
         public void Update(GameTime gameTime, Game1 game)
         {
             KeyboardState state = Keyboard.GetState();
-            if (state.IsKeyDown(Keys.Space) && !PreviousKeyState.IsKeyDown(Keys.Space)
+            if ((state.IsKeyDown(Keys.Space) && !PreviousKeyState.IsKeyDown(Keys.Space)
+                    || state.IsKeyDown(Keys.Up) && !PreviousKeyState.IsKeyDown(Keys.Up))
                 && !CurrentBall.IsMoving())
             {
                 ThrowCurrentBall();
