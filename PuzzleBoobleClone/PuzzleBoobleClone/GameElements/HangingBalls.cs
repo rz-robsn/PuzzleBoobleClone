@@ -17,6 +17,8 @@ namespace PuzzleBoobleClone.GameElements
             public int RowIndex;
             public int ColumnIndex;
 
+
+
             public BallSlot(int rowIndex, int columnIndex)
             {
                 RowIndex = rowIndex;
@@ -83,7 +85,7 @@ namespace PuzzleBoobleClone.GameElements
         private HangingBallsObserver Observer;
         private Score CurrentScore;
 
-        public HangingBalls(Bounds bounds, HangingBallsObserver observer, Score score)
+        public HangingBalls(Bounds bounds, HangingBallsObserver observer, Score score, GameElementsRepository.Level level)
         {
             Bounds = bounds;
             bounds.Observer = this;
@@ -114,36 +116,44 @@ namespace PuzzleBoobleClone.GameElements
             DeletedBalls = new List<Ball>();
 
             // Adding Balls
-            SetBallAtPosition(0, 0, new Ball(Vector2.Zero, Ball.BallColor.Red));
-            SetBallAtPosition(0, 1, new Ball(Vector2.Zero, Ball.BallColor.Red));
-            SetBallAtPosition(0, 2, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
-            SetBallAtPosition(0, 3, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
-            SetBallAtPosition(0, 4, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(0, 5, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(0, 6, new Ball(Vector2.Zero, Ball.BallColor.Green));
-            SetBallAtPosition(0, 7, new Ball(Vector2.Zero, Ball.BallColor.Green));
-            SetBallAtPosition(1, 0, new Ball(Vector2.Zero, Ball.BallColor.Red));
-            SetBallAtPosition(1, 1, new Ball(Vector2.Zero, Ball.BallColor.Red));
-            SetBallAtPosition(1, 2, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
-            SetBallAtPosition(1, 3, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
-            SetBallAtPosition(1, 4, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(1, 5, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(1, 6, new Ball(Vector2.Zero, Ball.BallColor.Green));
-            SetBallAtPosition(2, 0, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(2, 1, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(2, 2, new Ball(Vector2.Zero, Ball.BallColor.Green));
-            SetBallAtPosition(2, 3, new Ball(Vector2.Zero, Ball.BallColor.Green));
-            SetBallAtPosition(2, 4, new Ball(Vector2.Zero, Ball.BallColor.Red));
-            SetBallAtPosition(2, 5, new Ball(Vector2.Zero, Ball.BallColor.Red));
-            SetBallAtPosition(2, 6, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
-            SetBallAtPosition(2, 7, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
-            SetBallAtPosition(3, 0, new Ball(Vector2.Zero, Ball.BallColor.Blue));
-            SetBallAtPosition(3, 1, new Ball(Vector2.Zero, Ball.BallColor.Green));
-            SetBallAtPosition(3, 2, new Ball(Vector2.Zero, Ball.BallColor.Green));
-            SetBallAtPosition(3, 3, new Ball(Vector2.Zero, Ball.BallColor.Red));
-            SetBallAtPosition(3, 4, new Ball(Vector2.Zero, Ball.BallColor.Red));
-            SetBallAtPosition(3, 5, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
-            SetBallAtPosition(3, 6, new Ball(Vector2.Zero, Ball.BallColor.Yellow));  
+            switch(level)
+            {
+                case GameElementsRepository.Level.LEVELONE:
+                    SetBallAtPosition(0, 0, new Ball(Vector2.Zero, Ball.BallColor.Red));
+                    SetBallAtPosition(0, 1, new Ball(Vector2.Zero, Ball.BallColor.Red));
+                    SetBallAtPosition(0, 2, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+                    SetBallAtPosition(0, 3, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+                    SetBallAtPosition(0, 4, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+                    SetBallAtPosition(0, 5, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+                    SetBallAtPosition(0, 6, new Ball(Vector2.Zero, Ball.BallColor.Green));
+                    SetBallAtPosition(0, 7, new Ball(Vector2.Zero, Ball.BallColor.Green));
+                    SetBallAtPosition(1, 0, new Ball(Vector2.Zero, Ball.BallColor.Red));
+                    SetBallAtPosition(1, 1, new Ball(Vector2.Zero, Ball.BallColor.Red));
+                    SetBallAtPosition(1, 2, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+                    SetBallAtPosition(1, 3, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+                    SetBallAtPosition(1, 4, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+                    SetBallAtPosition(1, 5, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+                    SetBallAtPosition(1, 6, new Ball(Vector2.Zero, Ball.BallColor.Green));
+                    SetBallAtPosition(2, 0, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+                    SetBallAtPosition(2, 1, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+                    SetBallAtPosition(2, 2, new Ball(Vector2.Zero, Ball.BallColor.Green));
+                    SetBallAtPosition(2, 3, new Ball(Vector2.Zero, Ball.BallColor.Green));
+                    SetBallAtPosition(2, 4, new Ball(Vector2.Zero, Ball.BallColor.Red));
+                    SetBallAtPosition(2, 5, new Ball(Vector2.Zero, Ball.BallColor.Red));
+                    SetBallAtPosition(2, 6, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+                    SetBallAtPosition(2, 7, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+                    SetBallAtPosition(3, 0, new Ball(Vector2.Zero, Ball.BallColor.Blue));
+                    SetBallAtPosition(3, 1, new Ball(Vector2.Zero, Ball.BallColor.Green));
+                    SetBallAtPosition(3, 2, new Ball(Vector2.Zero, Ball.BallColor.Green));
+                    SetBallAtPosition(3, 3, new Ball(Vector2.Zero, Ball.BallColor.Red));
+                    SetBallAtPosition(3, 4, new Ball(Vector2.Zero, Ball.BallColor.Red));
+                    SetBallAtPosition(3, 5, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+                    SetBallAtPosition(3, 6, new Ball(Vector2.Zero, Ball.BallColor.Yellow));
+                    break;
+
+                case GameElementsRepository.Level.LEVELTWO:
+                    break;
+            }  
         }
 
         public void Update(GameTime gameTime, Game1 game)
