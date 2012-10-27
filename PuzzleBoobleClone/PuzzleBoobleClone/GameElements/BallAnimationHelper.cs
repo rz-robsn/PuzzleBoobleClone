@@ -10,6 +10,8 @@ namespace PuzzleBoobleClone.GameElements
 {
     public class BallAnimationHelper : GameElement
     {
+        public static readonly Vector2 CURRENT_BALL_POSITION_UNIT;
+
         private static int SRC_RECTANGLE_WIDTH = 16;
         private static int SRC_RECTANGLE_HEIGHT = 16;
 
@@ -35,15 +37,23 @@ namespace PuzzleBoobleClone.GameElements
 
         private static int FALLING_SPEED = 10;
 
-        public enum BallState {Normal, Loading, Destroyed, Falling}
+        private static float LOADING_SPEED = 5;
 
+        public enum BallState {Normal, Loading, Destroyed, Falling}
         private Rectangle SourceRectangle;
-        private int FrameIndex;
         private BallState State;
-        private double DestroyedGamedTime;
+
+        private int DestroyedFrameIndex;
+        private double DestroyedGamedTime;    
 
         private Ball Ball;
         
+        static BallAnimationHelper()
+        {
+            CURRENT_BALL_POSITION_UNIT = new Vector2(303, 365) - new Vector2(232, 400);
+            CURRENT_BALL_POSITION_UNIT.Normalize();
+        }
+
         public BallAnimationHelper(Ball ball) 
         {
            Ball = ball;
@@ -62,7 +72,10 @@ namespace PuzzleBoobleClone.GameElements
             State = BallState.Falling;
         }
 
-        public void Load() { }
+        public void Load() 
+        {
+            State = BallState.Loading;
+        }
 
         public void Update(GameTime gameTime, Game1 game)
         {
@@ -82,13 +95,13 @@ namespace PuzzleBoobleClone.GameElements
                                             DESTROYED_BALL_WIDTH,
                                             DESTROYED_BALL_HEIGHT);
                         DestroyedGamedTime = gameTime.TotalGameTime.TotalMilliseconds;
-                        FrameIndex = 0;
+                        DestroyedFrameIndex = 0;
                     }
-                    else if (DestroyedGamedTime + DESTROYED_BALL_FRAME_INTERVAL*(FrameIndex)
+                    else if (DestroyedGamedTime + DESTROYED_BALL_FRAME_INTERVAL*(DestroyedFrameIndex)
                                 < gameTime.TotalGameTime.TotalMilliseconds)
                     {
-                        FrameIndex++;
-                        if (FrameIndex < DESTROYED_BALL_NUMBER_OF_FRAMES)
+                        DestroyedFrameIndex++;
+                        if (DestroyedFrameIndex < DESTROYED_BALL_NUMBER_OF_FRAMES)
                         {
                             SourceRectangle = new Rectangle(
                                 SourceRectangle.Left + SPRITE_DISTANCE_DESTROYED_BALL_WIDTH,
@@ -103,6 +116,17 @@ namespace PuzzleBoobleClone.GameElements
                         }
                     }
                     break;
+
+                case BallState.Loading:
+                    if (Ball.Position.X >= BallsRepository.CURRENT_BALL_POSITION.X
+                        && Ball.Position.Y <= BallsRepository.CURRENT_BALL_POSITION.Y)
+                    {
+                        State = BallState.Normal;
+                        Ball.Position = BallsRepository.CURRENT_BALL_POSITION;
+                    }
+                    Ball.Position += CURRENT_BALL_POSITION_UNIT * LOADING_SPEED;
+ 
+                    break;
             }
         }
 
@@ -111,12 +135,13 @@ namespace PuzzleBoobleClone.GameElements
             switch (State) 
             {
                 case BallState.Falling:
+                case BallState.Loading:
                 case BallState.Normal:
                     spriteBatch.Draw(
                         texture: game.GameElements.SpriteSheet,
                         position: Ball.Position,
                         sourceRectangle: SourceRectangle,
-                        color: Microsoft.Xna.Framework.Color.White,
+                        color: Color.White,
                         rotation: 0,
                         origin: Vector2.Zero,
                         scale: 2.0f,

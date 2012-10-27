@@ -11,8 +11,8 @@ namespace PuzzleBoobleClone.GameElements
 {
     public class BallsRepository : GameElement
     {
-        private static readonly Vector2 CURRENT_BALL_POSITION = new Vector2(303, 365);
-        private static readonly Vector2 NEXT_BALL_POSITION = new Vector2(232, 400);
+        public static readonly Vector2 CURRENT_BALL_POSITION = new Vector2(299, 368);
+        public static readonly Vector2 NEXT_BALL_POSITION = new Vector2(232, 400);
 
         private static float MOVING_BALL_SPEED = 12;
 
@@ -80,13 +80,15 @@ namespace PuzzleBoobleClone.GameElements
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Game1 game)
         {
-            CurrentBall.Draw(gameTime, spriteBatch, game);
             NextBall.Draw(gameTime, spriteBatch, game);
+            CurrentBall.Draw(gameTime, spriteBatch, game);
             HangingBalls.Draw(gameTime, spriteBatch, game);
         }
 
         public void ThrowCurrentBall() 
         {
+            CurrentBall.Position = CURRENT_BALL_POSITION;
+
             CurrentBall.Direction = Arrow.GetDirectionVector();
             CurrentBall.Speed = MOVING_BALL_SPEED;
             ThrowBallTimer.Stop();
@@ -96,7 +98,7 @@ namespace PuzzleBoobleClone.GameElements
         private void SetCurrentBall(Ball ball) 
         {
             CurrentBall = ball;
-            CurrentBall.Position = CURRENT_BALL_POSITION;
+            CurrentBall.Load();
         }
 
         private void SetNextBall(Ball ball) 
