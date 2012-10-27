@@ -22,21 +22,12 @@ namespace PuzzleBoobleClone
 
         public SpriteFont Font;
 
+        public Level CurrentLevel;
+
         public GameElementsRepository()
         {
-            AimingArrow arrow = new AimingArrow();
-            Bounds bounds = new Bounds();
-            Score score = new Score();
-            HangingBalls hangingBalls = new HangingBalls(bounds, this, score, Level.LEVELONE);
-
-            this.Elements = new List<GameElement>();
-            this.Elements.Add(new BackGround());
-            this.Elements.Add(new BagAndLauncherMachine());
-            this.Elements.Add(new Bobbles()); 
-            this.Elements.Add(arrow);
-            this.Elements.Add(bounds);
-            this.Elements.Add(score);
-            this.Elements.Add(new BallsRepository(arrow, bounds, hangingBalls));
+            CurrentLevel = Level.LEVELONE;
+            LoadLevel(CurrentLevel);
         }
 
         public void LoadContent(Game1 game)
@@ -60,11 +51,21 @@ namespace PuzzleBoobleClone
 
         public void OnPlayerWins()
         {
-            // Load Level 2
+            CurrentLevel = CurrentLevel == Level.LEVELONE ? Level.LEVELTWO : Level.LEVELONE;
+            LoadLevel(CurrentLevel);
+        }
+
+        public void OnPlayerLoses()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void LoadLevel(Level level) 
+        {
             AimingArrow arrow = new AimingArrow();
             Bounds bounds = new Bounds();
             Score score = new Score();
-            HangingBalls hangingBalls = new HangingBalls(bounds, this, score, Level.LEVELTWO);
+            HangingBalls hangingBalls = new HangingBalls(bounds, this, score, level);
 
             this.Elements = new List<GameElement>();
             this.Elements.Add(new BackGround());
@@ -74,11 +75,6 @@ namespace PuzzleBoobleClone
             this.Elements.Add(bounds);
             this.Elements.Add(score);
             this.Elements.Add(new BallsRepository(arrow, bounds, hangingBalls));
-        }
-
-        public void OnPlayerLoses()
-        {
-            throw new NotImplementedException();
         }
     }
 }

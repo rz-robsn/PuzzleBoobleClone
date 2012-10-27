@@ -310,9 +310,8 @@ namespace PuzzleBoobleClone.GameElements
                 SetBallAtPosition(nearestRowIndex, nearestColumnIndex, ball);
                 DestroyAlignedPieceAtSlot(nearestRowIndex, nearestColumnIndex);
 
-                int numOfBallsFallen = FallDownAllBallsWithNoUpperAdjacentBalls();
-
-                CurrentScore.Value += (numOfBallsFallen > 0) ? (int)Math.Pow(2, FallDownAllBallsWithNoUpperAdjacentBalls()) * 10
+                int numOfBallsFallen = FallDownAllBallsWithNoUpperAdjacentBalls(nearestRowIndex, nearestColumnIndex);
+                CurrentScore.Value += (numOfBallsFallen > 0) ? (int)Math.Pow(2, numOfBallsFallen) * 10
                                                              : 0;  
                 CheckIfPlayerWins();
             }
@@ -400,13 +399,13 @@ namespace PuzzleBoobleClone.GameElements
         /// Falls all balls that have no Upper adjacent Balls.
         /// </summary>
         /// <returns>The Number of balls that fell.</returns>
-        private int FallDownAllBallsWithNoUpperAdjacentBalls() 
+        private int FallDownAllBallsWithNoUpperAdjacentBalls(int rowIndex, int columnIndex) 
         {
-            List<BallSlot> slots = GetAllBallsWithNoUpperAndSameRowAdjacentBalls();
+            List<BallSlot> slots = GetAllBallsWithNoUpperAndSameRowAdjacentBalls(rowIndex, columnIndex);
             if(slots.Count > 0)
             {
                 slots.ForEach(slot => FallBallAtSlot(slot));
-                return slots.Count + FallDownAllBallsWithNoUpperAdjacentBalls();
+                return slots.Count + FallDownAllBallsWithNoUpperAdjacentBalls(rowIndex, columnIndex);
             }
             return 0;
         }
@@ -476,7 +475,7 @@ namespace PuzzleBoobleClone.GameElements
             return slots;
         }
 
-        private List<BallSlot> GetAllBallsWithNoUpperAndSameRowAdjacentBalls()
+        private List<BallSlot> GetAllBallsWithNoUpperAndSameRowAdjacentBalls(int rowIndex, int columnIndex)
         {
             List<BallSlot> slots = new List<BallSlot>();
 
@@ -487,7 +486,8 @@ namespace PuzzleBoobleClone.GameElements
                 {
                     BallSlot slot = new BallSlot(i, j);
 
-                    if(GetBallAtSlot(slot) != null)
+                    if((rowIndex != i || columnIndex != j)
+                        && GetBallAtSlot(slot) != null)
                     {
                         if(GetBallsForSlots(GetAllAdjacentUpperSlots(slot)).All(ball => ball == null))
                         {
