@@ -263,6 +263,24 @@ namespace PuzzleBoobleClone.GameElements
 
                 if (emptySlots.Count > 0)
                 {
+
+                    if (emptySlots.ElementAt(0).RowIndex > GetCurrentLowestRowIndexLimit()) 
+                    {
+                        //Set All balls to Dark
+                        foreach (List<Ball> list in Balls)
+                        {
+                            foreach (Ball hangingBall in list)
+                            {
+                                if (hangingBall != null)
+                                {
+                                    hangingBall.GoDark();
+                                }
+                            }
+                        }
+                        Observer.ForEach(observer => observer.OnPlayerLoses()); 
+
+                    }
+
                     nearestRowIndex = emptySlots.ElementAt(0).RowIndex;
                     nearestColumnIndex = emptySlots.ElementAt(0).ColumnIndex;
                 }
@@ -544,7 +562,7 @@ namespace PuzzleBoobleClone.GameElements
 
         private void CheckIfPlayerLost()
         {
-            if (GetLowestOccupiedRowIndex() > NUMBER_OF_ROWS - Bounds.CurrentNumOfRowRemoved) 
+            if (GetLowestOccupiedRowIndex() > GetCurrentLowestRowIndexLimit()) 
             {
                 //Set All balls to Dark
                 foreach (List<Ball> list in Balls)
@@ -560,6 +578,11 @@ namespace PuzzleBoobleClone.GameElements
 
                 Observer.ForEach(observer => observer.OnPlayerLoses());                
             }
+        }
+
+        private int GetCurrentLowestRowIndexLimit()
+        {
+            return NUMBER_OF_ROWS - Bounds.CurrentNumOfRowRemoved-1;
         }
 
         private int GetLowestOccupiedRowIndex() 
