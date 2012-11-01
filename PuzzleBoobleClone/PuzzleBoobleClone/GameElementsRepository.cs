@@ -53,7 +53,16 @@ namespace PuzzleBoobleClone
         public void OnPlayerWins()
         {
             CurrentLevel = CurrentLevel == Level.LEVELONE ? Level.LEVELTWO : Level.LEVELONE;
-            LoadLevel(CurrentLevel);
+
+            Timer timer = new Timer();
+            timer.AutoReset = false;
+            timer.Interval = 5000;
+            timer.Elapsed += new ElapsedEventHandler(delegate(object source, ElapsedEventArgs e)
+            {
+                LoadLevel(CurrentLevel);
+                timer.Stop();
+            });
+            timer.Start();
         }
 
         public void OnPlayerLoses()
