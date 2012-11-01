@@ -357,7 +357,6 @@ namespace PuzzleBoobleClone.GameElements
             // Reposition All Rows
             for (int i = 0; i < NUMBER_OF_ROWS; i++)
             {
-                List<BallSlot> slotListCandidate = new List<BallSlot>();
                 for (int j = 0; j < GetNumberOfColumnForRow(i); j++)
                 {
                     Ball ball = GetBallAtSlot(i, j);
@@ -545,7 +544,7 @@ namespace PuzzleBoobleClone.GameElements
 
         private void CheckIfPlayerLost()
         {
-            if (GetLowestOccupiedRowIndex() + 1 > NUMBER_OF_ROWS - Bounds.CurrentNumOfRowRemoved) 
+            if (GetLowestOccupiedRowIndex() > NUMBER_OF_ROWS - Bounds.CurrentNumOfRowRemoved) 
             {
                 //Set All balls to Dark
                 foreach (List<Ball> list in Balls)
