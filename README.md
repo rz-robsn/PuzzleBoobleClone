@@ -8,6 +8,8 @@ A clone of the puzzle booble game in XNA.
 
 - Ball Animations when they "Pop", "Load", "Fall" or when the player loses.
 
+- Timer On Top of the Screen that diplays remaining time 
+- Press "R" To Reset.
 
 ## Run Instructions ##
 

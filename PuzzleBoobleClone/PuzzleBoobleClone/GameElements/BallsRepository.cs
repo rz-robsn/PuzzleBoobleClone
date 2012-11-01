@@ -34,6 +34,7 @@ namespace PuzzleBoobleClone.GameElements
         private KeyboardState PreviousKeyState;
 
         private Timer ThrowBallTimer;
+        private float ThrowBallTimerRemainingTime;
 
         public BallsRepository(AimingArrow arrow, Bounds bounds, HangingBalls hangingBalls) 
         {
@@ -47,11 +48,14 @@ namespace PuzzleBoobleClone.GameElements
             ThrowBallTimer = new Timer();
             ThrowBallTimer.AutoReset = false;
             ThrowBallTimer.Interval = 10000;
+            ThrowBallTimerRemainingTime = (float)ThrowBallTimer.Interval;
             ResetTimer();
         }
 
         public void Update(GameTime gameTime, Game1 game)
         {
+            ThrowBallTimerRemainingTime = MathHelper.Clamp(ThrowBallTimerRemainingTime - (float)gameTime.ElapsedGameTime.TotalMilliseconds, 0, (float)ThrowBallTimer.Interval);
+
             KeyboardState state = Keyboard.GetState();
             if ((state.IsKeyDown(Keys.Space) && !PreviousKeyState.IsKeyDown(Keys.Space)
                     || state.IsKeyDown(Keys.Up) && !PreviousKeyState.IsKeyDown(Keys.Up))
@@ -84,10 +88,15 @@ namespace PuzzleBoobleClone.GameElements
             NextBall.Draw(gameTime, spriteBatch, game);
             CurrentBall.Draw(gameTime, spriteBatch, game);
             HangingBalls.Draw(gameTime, spriteBatch, game);
+
+            // Draw ball timer
+            spriteBatch.DrawString(game.GameElements.Font, String.Format("{0:F0}", ThrowBallTimerRemainingTime / 1000), new Vector2(320,0), Color.WhiteSmoke);
         }
 
         public void ThrowCurrentBall() 
         {
+            ThrowBallTimerRemainingTime = (float)ThrowBallTimer.Interval;
+
             CurrentBall.Position = CURRENT_BALL_POSITION;
 
             CurrentBall.Direction = Arrow.GetDirectionVector();
