@@ -8,7 +8,7 @@ using System.Timers;
 
 namespace PuzzleBoobleClone.GameElements
 {
-    public class Bounds : GameElement
+    public class Bounds : GameElement , HangingBallsObserver
     {
         public static int ROW_HEIGHT = 32;
         private static int NUMBER_OF_ROWS = 12;
@@ -37,7 +37,7 @@ namespace PuzzleBoobleClone.GameElements
             RowRemovalTimer.Elapsed += new ElapsedEventHandler(
                 delegate(object source, ElapsedEventArgs e) 
                 {
-                    RemoveOneRow();    
+                        RemoveOneRow();    
                 });
             RowRemovalTimer.Start();
         }
@@ -87,6 +87,14 @@ namespace PuzzleBoobleClone.GameElements
             }
         }
 
-        
+        public void OnPlayerWins()
+        {
+            RowRemovalTimer.Stop();
+        }
+
+        public void OnPlayerLoses()
+        {
+            RowRemovalTimer.Stop();
+        }
     }
 }

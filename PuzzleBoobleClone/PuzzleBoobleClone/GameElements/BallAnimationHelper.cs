@@ -39,7 +39,7 @@ namespace PuzzleBoobleClone.GameElements
 
         private static float LOADING_SPEED = 5;
 
-        public enum BallState {Normal, Loading, Destroyed, Falling}
+        public enum BallState { Normal, Loading, Destroyed, Falling, Dark };
         private Rectangle SourceRectangle;
         private BallState State;
 
@@ -75,6 +75,11 @@ namespace PuzzleBoobleClone.GameElements
         public void Load() 
         {
             State = BallState.Loading;
+        }
+
+        public void GoDark() 
+        {
+            State = BallState.Dark;
         }
 
         public void Update(GameTime gameTime, Game1 game)
@@ -156,6 +161,20 @@ namespace PuzzleBoobleClone.GameElements
                         position: GetPositionWithCenterOnBallPosition(SourceRectangle),
                         sourceRectangle: SourceRectangle,
                         color: Microsoft.Xna.Framework.Color.White,
+                        rotation: 0,
+                        origin: Vector2.Zero,
+                        scale: 2.0f,
+                        effects: SpriteEffects.None,
+                        layerDepth: 0.6f
+                    );
+                    break;
+
+                case BallState.Dark:
+                    spriteBatch.Draw(
+                        texture: game.GameElements.SpriteSheet,
+                        position: Ball.Position,
+                        sourceRectangle: SourceRectangle,
+                        color: Color.Gray,
                         rotation: 0,
                         origin: Vector2.Zero,
                         scale: 2.0f,

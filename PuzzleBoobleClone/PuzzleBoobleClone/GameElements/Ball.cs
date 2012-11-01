@@ -68,5 +68,10 @@ namespace PuzzleBoobleClone.GameElements
         {
             AnimationHelper.Load();
         }
+
+        public void GoDark() 
+        {
+            AnimationHelper.GoDark();
+        }
     }
 }

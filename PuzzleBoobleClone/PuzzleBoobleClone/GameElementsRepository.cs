@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using PuzzleBoobleClone.GameElements;
+using System.Timers;
 
 namespace PuzzleBoobleClone
 {   
@@ -57,7 +58,15 @@ namespace PuzzleBoobleClone
 
         public void OnPlayerLoses()
         {
-            throw new NotImplementedException();
+            Timer timer = new Timer();
+            timer.AutoReset = false;
+            timer.Interval = 5000;
+            timer.Elapsed += new ElapsedEventHandler(delegate(object source, ElapsedEventArgs e)
+                {
+                    LoadLevel(CurrentLevel);
+                    timer.Stop();
+                });
+            timer.Start();
         }
 
         private void LoadLevel(Level level) 
@@ -65,7 +74,9 @@ namespace PuzzleBoobleClone
             AimingArrow arrow = new AimingArrow();
             Bounds bounds = new Bounds();
             Score score = new Score();
-            HangingBalls hangingBalls = new HangingBalls(bounds, this, score, level);
+            HangingBalls hangingBalls = new HangingBalls(bounds, score, level);
+            hangingBalls.Observer.Add(this);
+            hangingBalls.Observer.Add(bounds);
 
             this.Elements = new List<GameElement>();
             this.Elements.Add(new BackGround());

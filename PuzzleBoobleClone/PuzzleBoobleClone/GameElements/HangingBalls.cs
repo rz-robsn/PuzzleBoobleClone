@@ -82,16 +82,16 @@ namespace PuzzleBoobleClone.GameElements
         private List<Ball> DeletedBalls;
 
         private Bounds Bounds;
-        private HangingBallsObserver Observer;
+        public List<HangingBallsObserver> Observer;
         private Score CurrentScore;
 
-        public HangingBalls(Bounds bounds, HangingBallsObserver observer, Score score, GameElementsRepository.Level level)
+        public HangingBalls(Bounds bounds, Score score, GameElementsRepository.Level level)
         {
             Bounds = bounds;
             bounds.Observer = this;
             CurrentScore = score;
 
-            Observer = observer;
+            Observer = new List<HangingBallsObserver>();
 
             Balls = new List<List<Ball>>(NUMBER_OF_ROWS);
             for (int i = 0; i < NUMBER_OF_ROWS; i++)
@@ -269,7 +269,18 @@ namespace PuzzleBoobleClone.GameElements
                 else 
                 {
                     // There is no room left to place that ball.
-                    Observer.OnPlayerLoses();
+                    //Set All balls to Dark
+                    foreach (List<Ball> list in Balls)
+                    {
+                        foreach (Ball hangingBall in list)
+                        {
+                            if (hangingBall != null)
+                            {
+                                hangingBall.GoDark();
+                            }
+                        }
+                    }
+                    Observer.ForEach(observer => observer.OnPlayerLoses()); 
                     nearestColumnIndex = interSectingSlot.ColumnIndex;
                     nearestRowIndex = interSectingSlot.RowIndex;
                 }
@@ -528,7 +539,7 @@ namespace PuzzleBoobleClone.GameElements
         {
             if (Balls.All(list => list.All(ball => ball == null)))
             {
-                Observer.OnPlayerWins();
+                Observer.ForEach(observer => observer.OnPlayerWins());                
             }
         }
 
@@ -536,7 +547,19 @@ namespace PuzzleBoobleClone.GameElements
         {
             if (GetLowestOccupiedRowIndex() + 1 > NUMBER_OF_ROWS - Bounds.CurrentNumOfRowRemoved) 
             {
-                 Observer.OnPlayerLoses();
+                //Set All balls to Dark
+                foreach (List<Ball> list in Balls)
+                {
+                    foreach (Ball ball in list)
+                    {
+                        if (ball != null)
+                        {
+                            ball.GoDark();
+                        }
+                    }
+                }
+
+                Observer.ForEach(observer => observer.OnPlayerLoses());                
             }
         }
 
