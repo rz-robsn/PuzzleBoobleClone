@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using PuzzleBoobleClone.GameElements;
 using System.Timers;
+using Microsoft.Xna.Framework.Input;
 
 namespace PuzzleBoobleClone
 {   
@@ -25,6 +26,8 @@ namespace PuzzleBoobleClone
 
         public Level CurrentLevel;
 
+        private KeyboardState previousState;
+
         public GameElementsRepository()
         {
             CurrentLevel = Level.LEVELONE;
@@ -42,6 +45,13 @@ namespace PuzzleBoobleClone
         
         public void Update(GameTime gameTime, Game1 game)
         {
+            KeyboardState keyState = Keyboard.GetState();
+            if(keyState.IsKeyDown(Keys.R) && previousState.IsKeyUp(Keys.R))
+            {
+                CurrentLevel = Level.LEVELONE;
+                LoadLevel(CurrentLevel);
+            }
+            previousState = keyState;
             Elements.ForEach(e => e.Update(gameTime, game));
         }
             
